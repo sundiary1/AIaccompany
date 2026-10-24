@@ -6,6 +6,28 @@ import { defineConfig } from "vite"
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      "/api/demo/chat": {
+        target: "http://127.0.0.1:8001",
+        changeOrigin: false,
+        timeout: 65000,
+        proxyTimeout: 65000,
+      },
+      "/api/demo/conversations": {
+        target: "http://127.0.0.1:8001",
+        changeOrigin: false,
+      },
+      "/api/demo/memory": {
+        target: "http://127.0.0.1:8001",
+        changeOrigin: false,
+      },
+      "/api/demo/memories": {
+        target: "http://127.0.0.1:8001",
+        changeOrigin: false,
+      },
+    },
+  },
   build: {
     outDir: "../backend/app/frontend",
     emptyOutDir: true,

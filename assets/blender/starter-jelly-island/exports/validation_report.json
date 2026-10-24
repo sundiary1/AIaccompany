@@ -1,0 +1,92 @@
+{
+  "asset": "Starter Jelly Island",
+  "version": "1.0",
+  "blender_version": "5.2.3 LTS",
+  "seed": 2401,
+  "source": {
+    "objects": 32,
+    "mesh_objects": 25,
+    "empty_objects": 7,
+    "vertices": 1573,
+    "polygons": 1935,
+    "triangles": 2910,
+    "materials": 15,
+    "bounds_blender_z_up_m": {
+      "min": [
+        -4.51024,
+        -4.36322,
+        -0.76287
+      ],
+      "max": [
+        4.58143,
+        4.32342,
+        3.54459
+      ]
+    },
+    "ground_dimensions_m": {
+      "min": [
+        -4.51024,
+        -4.36322,
+        -0.76287
+      ],
+      "max": [
+        4.58143,
+        4.32342,
+        0.71518
+      ]
+    }
+  },
+  "glb": {
+    "bytes": 127580,
+    "nodes": 32,
+    "meshes": 25,
+    "primitives_potential_draw_calls": 34,
+    "triangles": 2910,
+    "materials": 15,
+    "textures": 0,
+    "cameras": 0,
+    "animations": 0,
+    "extensions_used": [],
+    "standard_up_axis": "Y"
+  },
+  "independent_reimport": {
+    "objects": 32,
+    "mesh_objects": 25,
+    "empty_objects": 7,
+    "vertices": 3768,
+    "polygons": 2910,
+    "triangles": 2910,
+    "materials": 15,
+    "bounds_blender_z_up_m": {
+      "min": [
+        -4.51024,
+        -4.36322,
+        -0.76287
+      ],
+      "max": [
+        4.58143,
+        4.32342,
+        3.54459
+      ]
+    },
+    "status": "PASS",
+    "material_nodes": "Principled BSDF; no image nodes",
+    "no_preview_camera_lights_or_animation": true
+  },
+  "reserved_space_m": {
+    "width": 3.6,
+    "depth": 3.5,
+    "center_blender_z_up": [
+      1.1,
+      -0.6,
+      0.668
+    ]
+  },
+  "render": {
+    "width": 1600,
+    "height": 1600,
+    "engine": "Cycles CPU",
+    "samples": 48,
+    "orthographic": true
+  }
+}

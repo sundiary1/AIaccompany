@@ -44,13 +44,22 @@ declare module "@tanstack/react-router" {
   }
 }
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <Toaster richColors closeButton />
-      </QueryClientProvider>
-    </ThemeProvider>
-  </StrictMode>,
-)
+async function startApp() {
+  if (import.meta.env.DEV && import.meta.env.VITE_DEMO_MODE === "true") {
+    const { createDemoAdapter } = await import("./dev/demo-api")
+    client.setConfig({ adapter: createDemoAdapter() })
+  }
+
+  ReactDOM.createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <Toaster richColors closeButton />
+        </QueryClientProvider>
+      </ThemeProvider>
+    </StrictMode>,
+  )
+}
+
+void startApp()

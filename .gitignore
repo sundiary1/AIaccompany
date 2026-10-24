@@ -6,3 +6,34 @@ backend/app/frontend/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+backend/.venv-demo/
+backend/demo_ai/.env.local
+__pycache__/
+/output/
+backend/demo_ai/data/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Local configuration and private material
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+!frontend/.env.demo
+*.pem
+*.key
+*.sqlite
+*.db
+*.owner.lock
+
+# Reproducible development outputs
+.playwright-cli/
+.ruff_cache/
+.pytest_cache/
+*.py[cod]
+*.blend[0-9]
+*.log
+frontend/dist/

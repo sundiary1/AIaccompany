@@ -1,6 +1,24 @@
-# FastAPI Project - Frontend
+# Mind Island Frontend
+
+当前无 Docker 启动与检查见 [开发指南](../docs/DEVELOPMENT.md)；以下保留前端与模板说明。
+
+Mind Island Demo V0.5 的授权自动记忆、信箱、费用限制和验证见 [MEMORY_DEMO_V05.md](../docs/history/MEMORY_DEMO_V05.md)。自动提取和记忆使用默认关闭。
+
+Mind Island Demo V0.4 的 SQLite 历史、临时聊天和验证见 [HISTORY_DEMO_V04.md](../docs/history/HISTORY_DEMO_V04.md)。
+
+Mind Island Demo V0.3 的本机 AI 配置和启动方式见 [AI_DEMO_V03.md](../docs/history/AI_DEMO_V03.md)。密钥填写在服务端 `backend/demo_ai/.env.local`，不要写入前端环境变量。
 
 The frontend is built with [Vite](https://vitejs.dev/), [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [TanStack Query](https://tanstack.com/query), [TanStack Router](https://tanstack.com/router), [Tailwind CSS](https://tailwindcss.com/), and [shadcn/ui](https://ui.shadcn.com/).
+
+## Standalone Frontend Preview
+
+For a read-only preview without Docker, PostgreSQL, or the backend, run `bun run dev:demo` from the project root. Sign in with `demo@example.com` / `mind-island-demo`. This explicit development mode uses fictional data in the browser; writes and email operations are unavailable. The ordinary `bun run dev` command continues to use the real API.
+
+See [../docs/history/FRONTEND_DEVELOPMENT.md](../docs/history/FRONTEND_DEVELOPMENT.md) for Windows setup, verified URLs, and validation results.
+
+## Island Preview
+
+Run `bun run dev:demo` from the project root and open `http://127.0.0.1:5174/island-preview`. This public page displays the real GLB with gentle motion, pointer/touch interaction and an accessible information button. No login or backend is required. See [../docs/history/ISLAND_PREVIEW.md](../docs/history/ISLAND_PREVIEW.md) for the file list, tests, screenshots and limitations.
 
 ## Requirements
 

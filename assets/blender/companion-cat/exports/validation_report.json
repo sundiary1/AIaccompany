@@ -1,0 +1,43 @@
+{
+  "blender": "5.2.3 LTS",
+  "source": {
+    "nodes": 25,
+    "meshes": 21,
+    "triangles": 7788,
+    "materials": 12,
+    "bounds_z_up": {
+      "min": [
+        -0.305,
+        -0.266,
+        0.0
+      ],
+      "max": [
+        0.454578,
+        0.419989,
+        1.169645
+      ]
+    }
+  },
+  "reimport": {
+    "nodes": 25,
+    "meshes": 21,
+    "triangles": 7788,
+    "materials": 12,
+    "bounds_z_up": {
+      "min": [
+        -0.305,
+        -0.266,
+        0.0
+      ],
+      "max": [
+        0.454578,
+        0.419989,
+        1.169645
+      ]
+    }
+  },
+  "glb_bytes": 172784,
+  "status": "PASS",
+  "animation": "R3F: named parent pivots; no rig or baked clips",
+  "front_gltf": "+Z"
+}

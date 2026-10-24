@@ -1,88 +1,74 @@
-# Full Stack FastAPI Template
+# Mind Island · 心屿
 
-[![Test Docker Compose](../../actions/workflows/test-docker-compose.yml/badge.svg)](../../actions/workflows/test-docker-compose.yml)
-[![Test Backend](../../actions/workflows/test-backend.yml/badge.svg)](../../actions/workflows/test-backend.yml)
+一座可以停下来聊天的小岛。当前版本 **Demo V0.5**，面向桌面与手机浏览器。
 
-## Technology Stack and Features
+已包含动态果冻岛、原创陪伴猫“小屿”、真实流式 AI 对话、本机历史会话，以及默认关闭、用户授权后启用的自动长期记忆。小屿是 AI 陪伴角色，不是心理治疗师。
 
-- ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
-  - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
-  - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
-  - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
-- 🚀 [React](https://react.dev) for the frontend.
-  - 🧩 Built into the backend application and served by FastAPI on the same domain as the API.
-  - 💃 Using TypeScript, hooks, [Vite](https://vitejs.dev), and other parts of a modern frontend stack.
-  - 🎨 [Tailwind CSS](https://tailwindcss.com) and [shadcn/ui](https://ui.shadcn.com) for the frontend components.
-  - 🤖 An automatically generated frontend client.
-  - 🧪 [Playwright](https://playwright.dev) for end-to-end testing.
-  - 🦇 Dark mode support.
-- ☁️ [FastAPI Cloud](https://fastapicloud.com) for deployment.
-- 🐋 [Docker Compose](https://www.docker.com) for local services and self-hosted deployment.
-  - 📞 [Traefik](https://traefik.io) as a reverse proxy with automatic HTTPS.
-- 🔒 Secure password hashing by default.
-- 🔑 JWT (JSON Web Token) authentication.
-- 📫 Email-based password recovery.
-- ✉️ [React Email](https://react.email) for email templates.
-- 📬 [Mailpit](https://mailpit.axllent.org) for local email testing during development.
-- ✅ Tests with [Pytest](https://pytest.org).
-- 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
+![记忆信箱桌面预览](docs/screenshots/memory-v05-desktop.png)
 
-### Dashboard Login
+## 本机启动
 
-![Dashboard login screenshot](img/login.png)
+需要 Git、Bun **1.4.4**、Python **3.13**。此 Demo 不需要 Docker、PostgreSQL 或模板的完整后端。
 
-### Dashboard - Admin
+从根目录在 PowerShell 执行：
 
-![Admin dashboard screenshot](img/dashboard.png)
+```powershell
+bun install --frozen-lockfile
+py -3.13 -m venv backend/.venv-demo
+backend/.venv-demo/Scripts/python.exe -m pip install -r backend/demo_ai/requirements-dev.txt
+Copy-Item backend/demo_ai/.env.example backend/demo_ai/.env.local
+```
 
-### Dashboard - Items
+仅首次创建配置文件，已有文件请保留。默认 `AI_MODE=mock`，无需密钥即可预览。
 
-![Items dashboard screenshot](img/dashboard-items.png)
+终端一：
 
-### Dashboard - Dark Mode
+```powershell
+Set-Location backend
+.\.venv-demo\Scripts\python.exe -m demo_ai
+```
 
-![Dark mode dashboard screenshot](img/dashboard-dark.png)
+终端二，从项目根目录运行：
 
-### React Email Templates
+```powershell
+bun run dev:demo
+```
 
-![Email templates screenshot](img/react-email.png)
+打开 <http://127.0.0.1:5174/island-preview>，点击小屿或“与小屿聊聊”。只有前端运行时仍可预览 3D 场景，聊天需要本机代理。
 
-### Mailpit - Local Email Testing
+真实 AI 配置填写在 **`backend/demo_ai/.env.local`**：
 
-![Mailpit screenshot](img/mailpit.png)
+```dotenv
+AI_MODE=live
+AI_API_KEY=填写你的供应商密钥
+AI_BASE_URL=填写供应商的兼容 API 基础地址
+AI_MODEL=填写模型名称
+```
 
-### Interactive API Documentation
+修改后重启代理。只使用服务端变量，不要创建包含密钥的 `VITE_*` 变量。可选独立记忆提取模型与费用限制见 [开发指南](docs/DEVELOPMENT.md)。
 
-![API docs](img/docs.png)
+## 开发入口
 
-## How to Use It
+- [简明项目上下文](docs/PROJECT_CONTEXT.md)：继续开发时先读这一份。
+- [开发指南](docs/DEVELOPMENT.md)：环境、验证、数据库和隐私边界。
+- [版本记录](CHANGELOG.md) · [历史交付记录](docs/history/)
+- [文件整理与版本管理记录](docs/REPOSITORY_MAINTENANCE.md)
+- [桌面截图](docs/screenshots/memory-v05-desktop.png) · [手机截图](docs/screenshots/memory-v05-mobile.png)
+- [代码协作约定](AGENTS.md) · [模板来源与保留功能](docs/UPSTREAM.md)
 
-Click the **Use this template** button at the top of this page to create a new repository.
+```text
+frontend/src/components/IslandPreview/  # 既有岛屿与角色
+frontend/src/components/Chat/           # 聊天、会话与记忆信箱
+frontend/public/models/                # WebGL 运行资产
+backend/demo_ai/                       # 独立本机代理与 SQLite
+assets/blender/                        # 可编辑 Blender 工程、脚本和导出
+docs/                                 # 当前说明与历史归档
+```
 
-## Backend Development
+## 数据与安全
 
-Backend docs: [backend/README.md](./backend/README.md).
+历史及记忆保存在本机 `backend/demo_ai/data/mind_island_demo.sqlite3`，未加密。自动提取与记忆使用均默认关闭；临时聊天不读取或生成长期记忆。
 
-## Frontend Development
+授权提取会通过已配置的大模型 API 处理相关内容，可能增加费用。密钥、数据库、开发备份、缓存与测试原始记录不进入 Git。代理仅监听本机，不应直接暴露到公网。
 
-Frontend docs: [frontend/README.md](./frontend/README.md).
-
-## Deployment
-
-FastAPI Cloud deployment: [deployment.md](./deployment.md).
-
-Self-hosted deployment with Docker Compose: [deployment-docker-compose.md](./deployment-docker-compose.md).
-
-## Development
-
-General development docs: [development.md](./development.md).
-
-This includes the local FastAPI and Vite workflow, Docker Compose services, `.env` configuration, and more.
-
-## Release Notes
-
-Check the file [release-notes.md](./release-notes.md).
-
-## License
-
-The Full Stack FastAPI Template is licensed under the terms of the MIT license.
+本项目基于 [Full Stack FastAPI Template](https://github.com/fastapi/full-stack-fastapi-template)，保留其 MIT [许可证](LICENSE)与现有模板功能。
