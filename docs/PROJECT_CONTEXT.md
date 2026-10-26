@@ -4,6 +4,8 @@
 
 ## 当前成果
 
+- 新品牌入口为 `/`，固定近景相机、轻玻璃 UI、原心屿 GLB 和入口专用连续浅水面；`/island-preview` 保留为群岛导航。群岛顶栏品牌可返回入口，其他模块仍返回群岛。模板 Dashboard 移至 `/dashboard`，登录/权限重定向同步保持原业务目的地。开发与五种视口截图见 `docs/LANDING_PAGE_IMMERSIVE.md`。未修改 AI、数据库或功能模块业务。
+
 本地版本 V0.9.0（雨林正念岛待视觉与功能验收，V0.7.1 记忆专项验收完成）。React + TypeScript + Vite；Three.js + R3F + Drei；独立 FastAPI 代理；Python 内置 SQLite。无需 Docker / PostgreSQL。
 
 - V0.9.0：首页第四岛为用户海滩小车模型，位于心屿后方，桌面 T 字、手机纵列侧枝，三条连接各三朵云。`/mindfulness` 使用独立 Island 模型、部件弹簧和独立 HTMLAudio 播放器；无正式音频时不请求空文件。音轨清单在 `frontend/src/components/Mindfulness/mindfulnessTracks.ts`，资源放 `frontend/public/audio/mindfulness/`。后台停帧、减少动态、静态降级和离页清理已验证；10 项新单测、13 项既有前端、98 项后端 Mock、7 项脚本测试及构建/规范检查通过，未调用真实 AI。详见 `docs/RAINFOREST_MINDFULNESS_V090.md`，实体 iOS/Android 音频仍待实机验收。

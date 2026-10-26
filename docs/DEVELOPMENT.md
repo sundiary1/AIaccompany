@@ -2,6 +2,8 @@
 
 当前 Demo 的启动见 [README](../README.md)，继续开发前先读 [PROJECT_CONTEXT](PROJECT_CONTEXT.md)。模板的完整 PostgreSQL 后端位于 `backend/app/`，不需要为本机 AI Demo 启动它。
 
+所有后续 UI 与 3D 开发遵循 [AGENTS.md 的全局视觉一致性规则](../AGENTS.md)。以仓库当前页面、主题变量和通用组件为基准，优先复用现有 Animal Island UI 封装与配套图标；保留已有美化成果，界面改动完成后进行桌面与手机截图验收。
+
 沙盘 `/sandplay` 的原版绘制与浏览器存档可仅用前端运行；SQLite 多作品功能需要本机 Demo 服务端。首次 CDN 加载需要网络，不调用模型。源码边界与回归见 [V0.7 说明](SANDPLAY_DEMO_V07.md)。不要格式化原 HTML；运行副本仅允许受完整性测试保护的模块桥接片段，其他适配在独立宿主文件。
 
 ## 配置与数据

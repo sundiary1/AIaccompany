@@ -322,6 +322,7 @@ function IslandContent(props: IslandSceneProps) {
 export function IslandScene(props: IslandSceneProps) {
   return (
     <Canvas
+      style={{ position: "absolute", inset: 0 }}
       shadows="percentage"
       dpr={[1, 1.5]}
       frameloop={props.playing || props.characterPlaying ? "always" : "demand"}

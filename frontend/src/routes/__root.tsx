@@ -12,9 +12,13 @@ import NotFound from "@/components/Common/NotFound"
 function RootLayout() {
   const isImmersivePage = useRouterState({
     select: (state) =>
-      ["/island-preview", "/sandplay", "/mandala", "/mindfulness"].includes(
-        state.location.pathname.replace(/\/$/, ""),
-      ),
+      [
+        "/",
+        "/island-preview",
+        "/sandplay",
+        "/mandala",
+        "/mindfulness",
+      ].includes(state.location.pathname.replace(/\/$/, "") || "/"),
   })
   return (
     <>

@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { Modal, Tooltip } from "animal-island-ui"
 import { type ComponentProps, type ReactNode, useState } from "react"
 import { IslandButton } from "./IslandButton"
@@ -136,14 +136,10 @@ export function PageHeader({
             {icon}
           </span>
           {home ? (
-            <div
-              className={styles.homeBrand}
-              role="img"
-              aria-label="心屿 Mind Island"
-            >
+            <Link className={styles.homeBrand} to="/" aria-label="返回心屿入口">
               <strong>{title}</strong>
               <span>Mind Island</span>
-            </div>
+            </Link>
           ) : (
             <h1 className={styles.title} aria-label={title} title={title}>
               {label}

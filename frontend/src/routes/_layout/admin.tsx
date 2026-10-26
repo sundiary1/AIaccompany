@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_layout/admin")({
     const { data: user } = await UsersService.readUserMe()
     if (!user.is_superuser) {
       throw redirect({
-        to: "/",
+        to: "/dashboard",
       })
     }
   },

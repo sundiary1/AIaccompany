@@ -13,11 +13,12 @@
     "test": "bunx playwright test",
     "test:ui": "bunx playwright test --ui",
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true ./",
-    "check:demo": "biome check src/components/Chat src/components/IslandPreview src/components/Mandala src/components/Mindfulness src/components/IslandUI src/components/Sandplay src/dev src/routes/island-preview.tsx src/routes/sandplay.tsx src/routes/mandala.tsx src/routes/mindfulness.tsx src/main.tsx src/routes/__root.tsx src/vite-env.d.ts vite.config.ts public/legacy/sandplay-host.js public/legacy/sandplay-bridge.js public/legacy/sandplay-host.css",
+    "check:demo": "biome check src/components/Landing src/components/Chat src/components/IslandPreview src/components/Mandala src/components/Mindfulness src/components/IslandUI src/components/Sandplay src/dev src/routes/index.tsx src/routes/_layout/dashboard.tsx src/routes/island-preview.tsx src/routes/sandplay.tsx src/routes/mandala.tsx src/routes/mindfulness.tsx src/main.tsx src/routes/__root.tsx src/vite-env.d.ts vite.config.ts public/legacy/sandplay-host.js public/legacy/sandplay-bridge.js public/legacy/sandplay-host.css",
     "test:sandplay": "node --test tests/sandplay-bridge.test.mjs",
     "test:islands": "bun test tests/island-world.test.mjs",
     "test:mandala": "bun test tests/mandala.test.mjs",
-    "test:mindfulness": "bun test tests/mindfulness.test.mjs"
+    "test:mindfulness": "bun test tests/mindfulness.test.mjs",
+    "test:landing": "bun test tests/landing.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

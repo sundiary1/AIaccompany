@@ -212,10 +212,6 @@ export function IslandPreviewPage() {
         <div className={styles.worldContent}>
           <main className={styles.main}>
             <div className={styles.intro}>
-              <p className={styles.eyebrow}>
-                <span className={styles.smallLine} />
-                云雾森林
-              </p>
               <h1>让心，轻轻靠岸。</h1>
               <p className={styles.description}>
                 不急着去哪里，先在这里停一会儿。
@@ -358,11 +354,6 @@ export function IslandPreviewPage() {
               ))}
             </div>
           </main>
-
-          <footer className={styles.footer}>
-            <span>留一点空白，给此刻的自己。</span>
-            <span className={styles.footerSignature}>MIND ISLAND · 心屿</span>
-          </footer>
         </div>
       </div>
       <ArchipelagoMap
