@@ -111,6 +111,7 @@ export function useCompanionChat() {
   const [error, setError] = useState<ChatFailure | null>(null)
   const [historyError, setHistoryError] = useState<string | null>(null)
   const [mode, setMode] = useState<ChatMode>("offline")
+  const modeRequest = useRef(0)
   const [conversation, setConversation] = useState<Conversation | null>(null)
   const [temporary, setTemporary] = useState(false)
   const [conversations, setConversations] = useState<Conversation[]>([])
@@ -150,11 +151,13 @@ export function useCompanionChat() {
     setLoading(next)
   }, [])
   const refreshMode = useCallback(() => {
+    const requestId = ++modeRequest.current
     const abort = new AbortController()
     const timeout = window.setTimeout(() => abort.abort(), 5000)
     void getChatMode(abort.signal)
       .then((next) => {
-        if (!abort.signal.aborted) setMode(next)
+        if (!abort.signal.aborted && requestId === modeRequest.current)
+          setMode(next)
       })
       .finally(() => window.clearTimeout(timeout))
     return () => {

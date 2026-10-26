@@ -16,7 +16,7 @@
 }
 
 @media (min-width: 901px) {
-  .page[data-chat-open="true"] {
+  .page[data-chat-open="true"] .worldContent {
     padding-right: 456px;
   }
   .page[data-chat-open="true"] .intro {

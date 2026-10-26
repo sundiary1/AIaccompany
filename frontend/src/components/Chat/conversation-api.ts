@@ -42,9 +42,13 @@ async function historyRequest<T>(
     })
     if (!response.ok) {
       const body = await response.json().catch(() => null)
+      const proxyUnavailable = response.status >= 500 && !body?.error
       throw new ChatRequestError(
-        body?.error?.message || "历史操作未成功，请重试。",
-        body?.error?.code || "history",
+        body?.error?.message ||
+          (proxyUnavailable
+            ? "无法连接本机 AI 服务，请启动代理后点击重新载入。"
+            : "历史操作未成功，请重试。"),
+        body?.error?.code || (proxyUnavailable ? "history_network" : "history"),
       )
     }
     return (response.status === 204 ? undefined : await response.json()) as T

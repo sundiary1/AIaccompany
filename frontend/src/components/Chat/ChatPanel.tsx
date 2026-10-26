@@ -37,6 +37,7 @@ export function ChatPanel({
   const [historyOpen, setHistoryOpen] = useState(false)
   const [memoryOpen, setMemoryOpen] = useState(false)
   const [clearOpen, setClearOpen] = useState(false)
+  const [reloadKey, setReloadKey] = useState(0)
   const [viewport, setViewport] = useState({
     height: window.visualViewport?.height ?? window.innerHeight,
     top: 0,
@@ -49,13 +50,15 @@ export function ChatPanel({
   const stickToBottom = useRef(true)
   const { refreshMode, restore } = chat
   useEffect(() => {
+    // Explicit reload retries both service connectivity and persisted history.
+    void reloadKey
     if (open) {
       void restore()
       return refreshMode()
     }
     setHistoryOpen(false)
     setMemoryOpen(false)
-  }, [open, refreshMode, restore])
+  }, [open, refreshMode, restore, reloadKey])
   useEffect(() => {
     if (!open) return
     close.current?.focus({ preventScroll: true })
@@ -236,7 +239,10 @@ export function ChatPanel({
           {chat.historyError && !chat.temporary && (
             <div className={styles.historyWarning} role="alert">
               <span>{chat.historyError}</span>
-              <IslandButton type="button" onClick={() => void chat.restore()}>
+              <IslandButton
+                type="button"
+                onClick={() => setReloadKey((key) => key + 1)}
+              >
                 重新载入
               </IslandButton>
             </div>

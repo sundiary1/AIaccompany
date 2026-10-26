@@ -209,154 +209,161 @@ export function IslandPreviewPage() {
           }
         />
 
-        <main className={styles.main}>
-          <div className={styles.intro}>
-            <p className={styles.eyebrow}>
-              <span className={styles.smallLine} />
-              云雾森林
-            </p>
-            <h1>让心，轻轻靠岸。</h1>
-            <p className={styles.description}>
-              不急着去哪里，先在这里停一会儿。
-            </p>
-          </div>
-
-          <section
-            className={styles.stage}
-            aria-label="群岛世界三维预览"
-            aria-busy={!ready && !failed}
-            data-testid="island-stage"
-            data-state={failed ? "error" : ready ? "ready" : "loading"}
-          >
-            <ErrorBoundary
-              FallbackComponent={SceneError}
-              onError={() => setFailed(true)}
-              onReset={() => {
-                for (const url of WORLD_MODEL_URLS) useGLTF.clear(url)
-                useGLTF.clear(CAT_MODEL_URL)
-                setReady(false)
-                setFailed(false)
-              }}
-            >
-              <IslandScene
-                compact={compact}
-                controlsEnabled={controlsEnabled}
-                resetKey={resetKey}
-                zoomRequest={zoomRequest}
-                playing={playing}
-                onReady={onReady}
-                onSelect={openInfo}
-                onIslandSelect={enterIsland}
-                reducedMotion={reducedMotion}
-                characterPlaying={characterPlaying}
-                characterState={chat.generating ? "Responding" : characterState}
-                characterActionKey={characterActionKey}
-                onCharacterSelect={openCharacterInfo}
-                onCharacterActionComplete={finishCharacterAction}
-              />
-              {!ready && (
-                <div className={styles.loading} role="status">
-                  <span className={styles.loadingDot} />
-                  小岛正在靠近…
-                </div>
-              )}
-            </ErrorBoundary>
-            <div className={forest.gestureHint} aria-hidden="true">
-              <span className={forest.desktopHint}>拖动探索 · 滚轮缩放</span>
-              <span className={forest.touchHint}>单指旋转 · 双指缩放</span>
+        <div className={styles.worldContent}>
+          <main className={styles.main}>
+            <div className={styles.intro}>
+              <p className={styles.eyebrow}>
+                <span className={styles.smallLine} />
+                云雾森林
+              </p>
+              <h1>让心，轻轻靠岸。</h1>
+              <p className={styles.description}>
+                不急着去哪里，先在这里停一会儿。
+              </p>
             </div>
-            <fieldset className={forest.sceneTools} aria-label="群岛视角与背景">
-              <Tooltip title="缩小视角" placement="top">
-                <IslandButton
-                  className={forest.iconButton}
-                  aria-label="缩小视角"
-                  disabled={!ready || failed}
-                  onClick={() => zoom(-1)}
-                >
-                  <MinusIcon size={16} />
-                </IslandButton>
-              </Tooltip>
-              <Tooltip title="放大视角" placement="top">
-                <IslandButton
-                  className={forest.iconButton}
-                  aria-label="放大视角"
-                  disabled={!ready || failed}
-                  onClick={() => zoom(1)}
-                >
-                  <PlusIcon size={16} />
-                </IslandButton>
-              </Tooltip>
-              <Tooltip title="复位视角" placement="top">
-                <IslandButton
-                  className={forest.iconButton}
-                  aria-label="复位视角"
-                  disabled={!ready || failed}
-                  onClick={() => setResetKey((key) => key + 1)}
-                >
-                  <RefreshIcon size={15} />
-                </IslandButton>
-              </Tooltip>
-              <Tooltip
-                title={
-                  reducedMotion
-                    ? "已遵循系统减少动态设置"
-                    : backgroundMoving
-                      ? "关闭背景动画"
-                      : "开启背景动画"
-                }
-                placement="top-end"
-              >
-                <IslandButton
-                  className={forest.iconButton}
-                  aria-label="背景动画"
-                  aria-pressed={backgroundMoving && !reducedMotion}
-                  disabled={reducedMotion}
-                  onClick={() => setBackgroundMoving((moving) => !moving)}
-                >
-                  <LeafIcon size={16} />
-                </IslandButton>
-              </Tooltip>
-            </fieldset>
-          </section>
 
-          <div className={styles.controls}>
-            <IslandButton
-              ref={chatButtonRef}
-              variant="primary"
-              type="button"
-              className={styles.infoButton}
-              onClick={openCharacterInfo}
-              aria-expanded={chatOpen}
+            <section
+              className={styles.stage}
+              aria-label="群岛世界三维预览"
+              aria-busy={!ready && !failed}
+              data-testid="island-stage"
+              data-state={failed ? "error" : ready ? "ready" : "loading"}
             >
-              <ChatIcon size={15} aria-hidden="true" />
-              与小屿聊聊
-            </IslandButton>
-            {ISLANDS.filter(
-              (island) => island.enabled && island.id !== "home",
-            ).map((island) => (
-              <Link
-                key={island.id}
-                to={island.route}
-                preload={false}
-                className={styles.infoButton}
+              <ErrorBoundary
+                FallbackComponent={SceneError}
+                onError={() => setFailed(true)}
+                onReset={() => {
+                  for (const url of WORLD_MODEL_URLS) useGLTF.clear(url)
+                  useGLTF.clear(CAT_MODEL_URL)
+                  setReady(false)
+                  setFailed(false)
+                }}
               >
-                {island.id === "mandala" ? (
-                  <BookIcon size={19} />
-                ) : island.id === "mindfulness" ? (
-                  <TreeIcon size={19} />
-                ) : (
-                  <MountainIcon size={19} />
+                <IslandScene
+                  compact={compact}
+                  controlsEnabled={controlsEnabled}
+                  resetKey={resetKey}
+                  zoomRequest={zoomRequest}
+                  playing={playing}
+                  onReady={onReady}
+                  onSelect={openInfo}
+                  onIslandSelect={enterIsland}
+                  reducedMotion={reducedMotion}
+                  characterPlaying={characterPlaying}
+                  characterState={
+                    chat.generating ? "Responding" : characterState
+                  }
+                  characterActionKey={characterActionKey}
+                  onCharacterSelect={openCharacterInfo}
+                  onCharacterActionComplete={finishCharacterAction}
+                />
+                {!ready && (
+                  <div className={styles.loading} role="status">
+                    <span className={styles.loadingDot} />
+                    小岛正在靠近…
+                  </div>
                 )}
-                {island.name}
-              </Link>
-            ))}
-          </div>
-        </main>
+              </ErrorBoundary>
+              <div className={forest.gestureHint} aria-hidden="true">
+                <span className={forest.desktopHint}>拖动探索 · 滚轮缩放</span>
+                <span className={forest.touchHint}>单指旋转 · 双指缩放</span>
+              </div>
+              <fieldset
+                className={forest.sceneTools}
+                aria-label="群岛视角与背景"
+              >
+                <Tooltip title="缩小视角" placement="top">
+                  <IslandButton
+                    className={forest.iconButton}
+                    aria-label="缩小视角"
+                    disabled={!ready || failed}
+                    onClick={() => zoom(-1)}
+                  >
+                    <MinusIcon size={16} />
+                  </IslandButton>
+                </Tooltip>
+                <Tooltip title="放大视角" placement="top">
+                  <IslandButton
+                    className={forest.iconButton}
+                    aria-label="放大视角"
+                    disabled={!ready || failed}
+                    onClick={() => zoom(1)}
+                  >
+                    <PlusIcon size={16} />
+                  </IslandButton>
+                </Tooltip>
+                <Tooltip title="复位视角" placement="top">
+                  <IslandButton
+                    className={forest.iconButton}
+                    aria-label="复位视角"
+                    disabled={!ready || failed}
+                    onClick={() => setResetKey((key) => key + 1)}
+                  >
+                    <RefreshIcon size={15} />
+                  </IslandButton>
+                </Tooltip>
+                <Tooltip
+                  title={
+                    reducedMotion
+                      ? "已遵循系统减少动态设置"
+                      : backgroundMoving
+                        ? "关闭背景动画"
+                        : "开启背景动画"
+                  }
+                  placement="top-end"
+                >
+                  <IslandButton
+                    className={forest.iconButton}
+                    aria-label="背景动画"
+                    aria-pressed={backgroundMoving && !reducedMotion}
+                    disabled={reducedMotion}
+                    onClick={() => setBackgroundMoving((moving) => !moving)}
+                  >
+                    <LeafIcon size={16} />
+                  </IslandButton>
+                </Tooltip>
+              </fieldset>
+            </section>
 
-        <footer className={styles.footer}>
-          <span>留一点空白，给此刻的自己。</span>
-          <span className={styles.footerSignature}>MIND ISLAND · 心屿</span>
-        </footer>
+            <div className={styles.controls}>
+              <IslandButton
+                ref={chatButtonRef}
+                variant="primary"
+                type="button"
+                className={styles.infoButton}
+                onClick={openCharacterInfo}
+                aria-expanded={chatOpen}
+              >
+                <ChatIcon size={15} aria-hidden="true" />
+                与小屿聊聊
+              </IslandButton>
+              {ISLANDS.filter(
+                (island) => island.enabled && island.id !== "home",
+              ).map((island) => (
+                <Link
+                  key={island.id}
+                  to={island.route}
+                  preload={false}
+                  className={styles.infoButton}
+                >
+                  {island.id === "mandala" ? (
+                    <BookIcon size={19} />
+                  ) : island.id === "mindfulness" ? (
+                    <TreeIcon size={19} />
+                  ) : (
+                    <MountainIcon size={19} />
+                  )}
+                  {island.name}
+                </Link>
+              ))}
+            </div>
+          </main>
+
+          <footer className={styles.footer}>
+            <span>留一点空白，给此刻的自己。</span>
+            <span className={styles.footerSignature}>MIND ISLAND · 心屿</span>
+          </footer>
+        </div>
       </div>
       <ArchipelagoMap
         compact={compact}
