@@ -1,23 +1,7 @@
-.header {
-  position: relative;
-  z-index: 10;
-  flex-shrink: 0;
-  width: 100%;
-  height: calc(72px + env(safe-area-inset-top));
-  padding-top: env(safe-area-inset-top);
-  box-sizing: border-box;
-  border-bottom: 1px solid var(--mi-line);
-  background: #fff;
-  color: var(--mi-heading);
-  font-family: var(--mi-font);
-}
 .inner {
   width: 100%;
-  max-width: 1520px;
-  height: 100%;
-  margin: 0 auto;
-  padding: 0 max(32px, env(safe-area-inset-right)) 0
-    max(32px, env(safe-area-inset-left));
+  min-height: 62px;
+  padding: 8px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -142,21 +126,18 @@
 .mobileOnly {
   display: none;
 }
-.header button:focus-visible {
+.inner button:focus-visible {
   outline: 3px solid var(--mi-focus);
   outline-offset: 3px;
 }
 @media (max-width: 760px) {
-  .header {
-    height: calc(56px + env(safe-area-inset-top));
-  }
   .inner {
-    padding-right: max(16px, env(safe-area-inset-right));
-    padding-left: max(16px, env(safe-area-inset-left));
-    gap: 12px;
+    min-height: 54px;
+    padding: 6px 12px;
+    gap: 8px;
   }
   .identity {
-    gap: 8px;
+    gap: 6px;
   }
   .divider {
     margin: 0;

@@ -4,6 +4,8 @@
 
 ## 当前成果
 
+- 五个产品页面使用共享玻璃导航 `IslandUI/GlassNavigation`：仅品牌入口 `/` 的桌面导航在离开 4 秒后向上内收，顶部/Tab/上滚唤回；群岛、沙盒、书屋和正念导航始终显示，所有手机导航常驻。群岛地图已删除主标题及副文案。业务按钮、返回保护及模型未改。旧版已提交并上传 `1953155` / `v0.9.0-before-glass-navigation`，新版见 `docs/GLASS_NAVIGATION.md`。
+
 - 新品牌入口为 `/`，固定近景相机、轻玻璃 UI、原心屿 GLB 和入口专用连续浅水面；`/island-preview` 保留为群岛导航。群岛顶栏品牌可返回入口，其他模块仍返回群岛。模板 Dashboard 移至 `/dashboard`，登录/权限重定向同步保持原业务目的地。开发与五种视口截图见 `docs/LANDING_PAGE_IMMERSIVE.md`。未修改 AI、数据库或功能模块业务。
 
 本地版本 V0.9.0（雨林正念岛待视觉与功能验收，V0.7.1 记忆专项验收完成）。React + TypeScript + Vite；Three.js + R3F + Drei；独立 FastAPI 代理；Python 内置 SQLite。无需 Docker / PostgreSQL。

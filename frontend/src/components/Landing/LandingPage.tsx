@@ -8,6 +8,7 @@ import {
   useSyncExternalStore,
 } from "react"
 import { ErrorBoundary } from "react-error-boundary"
+import { GlassNavigation } from "../IslandUI/GlassNavigation"
 import { IslandButton } from "../IslandUI/IslandButton"
 import { ArrowUpRightIcon, SailboatIcon } from "../IslandUI/island-icons"
 import styles from "./landing.module.css"
@@ -66,20 +67,26 @@ export function LandingPage() {
         </ErrorBoundary>
       </div>
       <div className={styles.readability} aria-hidden="true" />
-      <header className={styles.header}>
-        <div className={styles.brand} role="img" aria-label="心屿 Mind Island">
-          <span className={styles.mark}>
-            <SailboatIcon size={22} aria-hidden="true" />
-          </span>
-          <strong>心屿</strong>
-          <span className={styles.englishBrand}>Mind Island</span>
+      <GlassNavigation overlay home autoHide>
+        <div className={styles.header}>
+          <div
+            className={styles.brand}
+            role="img"
+            aria-label="心屿 Mind Island"
+          >
+            <span className={styles.mark}>
+              <SailboatIcon size={22} aria-hidden="true" />
+            </span>
+            <strong>心屿</strong>
+            <span className={styles.englishBrand}>Mind Island</span>
+          </div>
+          <nav aria-label="入口导航">
+            <IslandButton className={styles.enter} onClick={enter}>
+              进入群岛 <ArrowUpRightIcon size={17} aria-hidden="true" />
+            </IslandButton>
+          </nav>
         </div>
-        <nav aria-label="入口导航">
-          <IslandButton className={styles.enter} onClick={enter}>
-            进入群岛 <ArrowUpRightIcon size={17} aria-hidden="true" />
-          </IslandButton>
-        </nav>
-      </header>
+      </GlassNavigation>
       <main className={styles.content}>
         <div className={styles.copy}>
           <h1>

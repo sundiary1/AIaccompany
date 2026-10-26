@@ -211,13 +211,6 @@ export function IslandPreviewPage() {
 
         <div className={styles.worldContent}>
           <main className={styles.main}>
-            <div className={styles.intro}>
-              <h1>让心，轻轻靠岸。</h1>
-              <p className={styles.description}>
-                不急着去哪里，先在这里停一会儿。
-              </p>
-            </div>
-
             <section
               className={styles.stage}
               aria-label="群岛世界三维预览"

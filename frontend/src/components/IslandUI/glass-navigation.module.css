@@ -1,0 +1,96 @@
+.slot {
+  position: relative;
+  z-index: 30;
+  flex-shrink: 0;
+  height: calc(112px + env(safe-area-inset-top));
+  width: 100%;
+  color: var(--mi-heading);
+  font-family: var(--mi-font);
+}
+.slot[data-overlay="true"] {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0;
+}
+.panel {
+  position: fixed;
+  top: max(24px, env(safe-area-inset-top));
+  left: max(32px, env(safe-area-inset-left));
+  right: max(32px, env(safe-area-inset-right));
+  min-height: 64px;
+  border: 1px solid #ffffffc7;
+  border-radius: 22px;
+  background: #ffffff85;
+  backdrop-filter: blur(16px) saturate(1.15);
+  box-shadow:
+    0 6px 24px #304c4910,
+    inset 0 1px 0 #ffffffa3;
+  transform-origin: center top;
+  transition:
+    transform 260ms var(--mi-ease),
+    opacity 200ms var(--mi-ease);
+}
+.panel[data-hidden="true"] {
+  transform: translateY(calc(-100% - 40px)) scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+}
+.hotZone {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 24px;
+}
+.reveal {
+  position: fixed;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 18px;
+  border: 1px solid #ffffffb3;
+  border-radius: 999px;
+  background: #ffffffb3;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 12px #304c4910;
+}
+.reveal span {
+  display: block;
+  width: 28px;
+  height: 3px;
+  margin: auto;
+  border-radius: 999px;
+  background: #42644966;
+}
+.reveal:focus-visible {
+  outline: 2px solid var(--mi-accent);
+  outline-offset: 3px;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .panel {
+    background: #fffffff2;
+  }
+}
+@media (max-width: 760px), (hover: none), (pointer: coarse) {
+  .slot {
+    height: calc(88px + env(safe-area-inset-top));
+  }
+  .slot[data-overlay="true"] {
+    height: 0;
+  }
+  .panel {
+    top: max(16px, env(safe-area-inset-top));
+    left: max(16px, env(safe-area-inset-left));
+    right: max(16px, env(safe-area-inset-right));
+    min-height: 56px;
+    border-radius: 18px;
+  }
+  .hotZone,
+  .reveal {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    transition: none;
+  }
+}

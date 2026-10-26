@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router"
 import { Modal, Tooltip } from "animal-island-ui"
 import { type ComponentProps, type ReactNode, useState } from "react"
+import { GlassNavigation } from "./GlassNavigation"
 import { IslandButton } from "./IslandButton"
 import { ArrowLeftIcon, EllipsisIcon } from "./island-icons"
 import styles from "./page-header.module.css"
@@ -111,11 +112,7 @@ export function PageHeader({
     </>
   )
   return (
-    <header
-      className={styles.header}
-      data-testid="page-header"
-      data-home={home}
-    >
+    <GlassNavigation home={home}>
       <div className={styles.inner}>
         <div className={styles.identity}>
           {!home && (
@@ -155,6 +152,6 @@ export function PageHeader({
           </nav>
         )}
       </div>
-    </header>
+    </GlassNavigation>
   )
 }

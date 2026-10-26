@@ -27,12 +27,6 @@
   .page[data-chat-open="true"] .worldContent {
     padding-right: 456px;
   }
-  .page[data-chat-open="true"] .intro {
-    padding: 0 8px;
-  }
-  .page[data-chat-open="true"] .intro h1 {
-    font-size: clamp(27px, 3.2vw, 45px);
-  }
   .page[data-chat-open="true"] .controls {
     flex-wrap: wrap;
     gap: 14px;
@@ -40,7 +34,6 @@
 }
 
 @media (max-width: 900px) {
-  .page[data-chat-open="true"] .intro,
   .page[data-chat-open="true"] .controls {
     display: none;
   }
@@ -64,32 +57,6 @@
   max-width: 1600px;
   margin: 0 auto;
   padding: 0 20px;
-}
-
-.intro {
-  position: relative;
-  width: 100%;
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 0 22px;
-}
-
-.intro h1 {
-  margin: 0;
-  font-family: var(--mi-font);
-  font-size: clamp(28px, 2.8vw, 40px);
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 0.025em;
-  color: var(--mi-heading);
-}
-
-.description {
-  margin: 8px 0 0;
-  color: var(--island-muted);
-  font-size: 13px;
-  letter-spacing: 0.035em;
-  line-height: 1.8;
 }
 
 .stage {
@@ -278,18 +245,8 @@
   .main {
     padding: 0 12px;
   }
-  .intro {
-    padding: 0 13px;
-  }
-  .intro h1 {
-    font-size: clamp(27px, 7.8vw, 36px);
-    letter-spacing: 0.035em;
-  }
-  .description {
-    margin-top: 8px;
-    font-size: 12px;
-  }
   .stage {
+    min-height: min(400px, 52dvh);
     margin-top: 0;
   }
   .controls {
@@ -379,12 +336,6 @@
 @media (max-width: 900px) and (max-height: 550px) {
   .main {
     padding-top: 0;
-  }
-  .intro h1 {
-    font-size: 27px;
-  }
-  .description {
-    display: none;
   }
   .stage {
     min-height: 140px;
