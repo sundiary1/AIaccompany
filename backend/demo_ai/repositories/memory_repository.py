@@ -12,6 +12,7 @@ from ..memory_rules import (
     derive,
     lexical_score,
     normalize,
+    previous_preference,
     sensitive,
     validate_candidate,
 )
@@ -330,8 +331,11 @@ class MemoryRepository:
                 "SELECT m.* FROM memories m JOIN memory_settings s ON s.id=1 WHERE s.use_memories=1 AND s.consented_at IS NOT NULL AND m.enabled=1 AND m.review_status='approved' AND NOT EXISTS(SELECT 1 FROM memories p WHERE p.related_memory_id=m.id AND p.review_status='pending') ORDER BY m.updated_at DESC LIMIT 200"
             ).fetchall()
             current = derive(query)
+            previous = previous_preference(query, current) if current else None
             ranked = []
             for row in rows:
+                if previous and normalize(previous.content) == row["normalized"]:
+                    continue
                 if (
                     current
                     and current.topic == row["topic_key"]
@@ -510,12 +514,25 @@ class MemoryRepository:
                     "SELECT * FROM memories WHERE topic_key=? AND review_status='approved' ORDER BY updated_at DESC LIMIT 1",
                     (fact.topic,),
                 ).fetchone()
+                previous = previous_preference(source["content"], fact)
+                if previous:
+                    replacement = c.execute(
+                        "SELECT * FROM memories WHERE normalized=? AND review_status='approved' ORDER BY updated_at DESC LIMIT 1",
+                        (normalize(previous.content),),
+                    ).fetchone()
+                    existing = replacement or existing
                 if candidate.target_id:
                     target = c.execute(
                         "SELECT * FROM memories WHERE id=?", (str(candidate.target_id),)
                     ).fetchone()
                     if not target or not any(
                         r["id"] == target["id"] for r in job["existing"]
+                    ):
+                        skipped += 1
+                        continue
+                    if target["topic_key"] != fact.topic and (
+                        not previous
+                        or target["normalized"] != normalize(previous.content)
                     ):
                         skipped += 1
                         continue
@@ -549,7 +566,13 @@ class MemoryRepository:
                     and existing["review_status"] == "approved"
                     and not existing["user_edited"]
                     and fact.explicit
-                    and (fact.topic == existing["topic_key"])
+                    and (
+                        fact.topic == existing["topic_key"]
+                        or (
+                            previous
+                            and existing["normalized"] == normalize(previous.content)
+                        )
+                    )
                 )
                 if can_update:
                     c.execute(
@@ -563,12 +586,13 @@ class MemoryRepository:
                         ),
                     )
                     c.execute(
-                        "UPDATE memories SET content=?,normalized=?,phase=?,category=?,source_conversation_id=?,source_message_id=?,revision=revision+1,updated_at=? WHERE id=?",
+                        "UPDATE memories SET content=?,normalized=?,phase=?,category=?,topic_key=?,source_conversation_id=?,source_message_id=?,revision=revision+1,updated_at=? WHERE id=?",
                         (
                             fact.content,
                             normalized,
                             fact.phase,
                             fact.category,
+                            fact.topic,
                             job["conversation_id"],
                             job["user_message_id"],
                             timestamp,

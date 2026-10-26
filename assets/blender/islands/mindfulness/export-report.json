@@ -1,0 +1,479 @@
+{
+  "beach_home": {
+    "blender": "5.2.3 LTS",
+    "source": "source/beach_home.blend",
+    "excluded": [
+      "GameIsoCam",
+      "surface",
+      "Bg",
+      "ReflectionCubemap",
+      "IrradianceVolume",
+      "Area",
+      "Area.001",
+      "Area.002",
+      "Point"
+    ],
+    "objects": 63,
+    "triangles": 31923,
+    "materials": 20,
+    "bytes": 2249752,
+    "bounds_z_up": {
+      "min": [
+        -3.982133388519287,
+        -4.0,
+        -0.9382807612419128
+      ],
+      "max": [
+        3.982133388519287,
+        4.0,
+        4.4394354820251465
+      ],
+      "size": [
+        7.964266777038574,
+        8.0,
+        5.377716243267059
+      ]
+    },
+    "adjustments": [],
+    "material_fixes": [
+      {
+        "material": "water",
+        "change": "opaque stylized water; preserve base color/roughness"
+      },
+      {
+        "material": "tail",
+        "change": "emission converted to exportable Principled"
+      },
+      {
+        "material": "headlights",
+        "change": "emission converted to exportable Principled"
+      }
+    ],
+    "reimport": "PASS",
+    "nodes": [
+      {
+        "name": "Ground_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Rocks_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Plane.001_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Palm.001_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.002_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.003_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.004_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.005_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.006_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.007_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.008_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.009_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.010_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.011_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Palm_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.012_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.013_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.014_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.015_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.016_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.017_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.018_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.019_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.020_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Water_Web",
+        "kind": "water"
+      },
+      {
+        "name": "Van_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.009_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.010_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.011_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.012_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.013_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.014_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.015_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Circle_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Vert_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.023_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.016_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.017_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Circle.001_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.018_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.019_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Surf.001_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.025_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Surf.002_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.027_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Surf_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Plane.029_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Blanket_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Bottle_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Bag_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Rock_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.001_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.002_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.003_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.004_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.005_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.006_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.007_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.008_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.009_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.010_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.011_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Rock.012_Web",
+        "kind": "rock"
+      }
+    ]
+  },
+  "rainforest": {
+    "blender": "5.2.3 LTS",
+    "source": "source/rainforest.blend",
+    "excluded": [
+      "Area",
+      "Sun",
+      "Sun.001",
+      "Camera",
+      "Cube.104"
+    ],
+    "objects": 14,
+    "triangles": 91312,
+    "materials": 8,
+    "bytes": 2237464,
+    "bounds_z_up": {
+      "min": [
+        -4.0,
+        -3.7966437339782715,
+        -1.2594327926635742
+      ],
+      "max": [
+        4.0,
+        3.7966437339782715,
+        5.775039196014404
+      ],
+      "size": [
+        8.0,
+        7.593287467956543,
+        7.0344719886779785
+      ]
+    },
+    "adjustments": [
+      {
+        "object": "Cube.101",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.103",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.104",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.105",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.106",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.111",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.113",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.114",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.116",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.108",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.109",
+        "subdivision_levels": 1
+      },
+      {
+        "object": "Cube.103_Web",
+        "triangle_budget": 6000
+      },
+      {
+        "object": "Cylinder.089_Web",
+        "triangle_budget": 20000
+      },
+      {
+        "object": "Plane.359_Web",
+        "triangle_budget": 28000
+      },
+      {
+        "object": "Cube.111_Web",
+        "triangle_budget": 6000
+      },
+      {
+        "object": "Cube.113_Web",
+        "triangle_budget": 6000
+      },
+      {
+        "object": "Cube.114_Web",
+        "triangle_budget": 6000
+      }
+    ],
+    "material_fixes": [
+      {
+        "material": "Water.007",
+        "change": "opaque stylized water; preserve base color/roughness"
+      },
+      {
+        "material": "Coklat Pohon",
+        "change": "bark ramp midpoint as flat color"
+      }
+    ],
+    "reimport": "PASS",
+    "nodes": [
+      {
+        "name": "Cube.101_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.103_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.105_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.106_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Cube.107_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cylinder.089_Web",
+        "kind": "trunk"
+      },
+      {
+        "name": "Plane.359_Web",
+        "kind": "foliage"
+      },
+      {
+        "name": "Cube.111_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.113_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.114_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cube.116_Web",
+        "kind": "water"
+      },
+      {
+        "name": "Cube.108_Web",
+        "kind": "rock"
+      },
+      {
+        "name": "Cube.109_Web",
+        "kind": "terrain"
+      },
+      {
+        "name": "Cylinder.086_Web",
+        "kind": "terrain"
+      }
+    ]
+  }
+}

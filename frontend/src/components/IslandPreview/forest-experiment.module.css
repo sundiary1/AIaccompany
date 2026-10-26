@@ -1,0 +1,278 @@
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.atmosphere * {
+  pointer-events: none;
+}
+.paper {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  height: 100%;
+  opacity: 0.13;
+}
+.glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 8% 61%, #e1eddd66, transparent 42%),
+    radial-gradient(ellipse at 93% 49%, #deeee366, transparent 38%),
+    radial-gradient(ellipse at 50% 70%, #f2f6e733, transparent 60%);
+}
+.forest {
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  width: 100%;
+  height: min(55vh, 550px);
+  fill: #8ba18d;
+  opacity: 0.16;
+}
+.mist,
+.nearMist {
+  position: absolute;
+  width: 125%;
+  left: -12%;
+  height: 35%;
+  bottom: 7%;
+  background:
+    radial-gradient(ellipse at 20% 60%, #fffffff2 0 20%, transparent 64%),
+    radial-gradient(ellipse at 78% 80%, #ffffffeb 0 22%, transparent 65%);
+  animation: forest-mist 32s ease-in-out infinite alternate;
+}
+.nearMist {
+  bottom: 23%;
+  opacity: 0.55;
+  animation-duration: 43s;
+  animation-direction: alternate-reverse;
+}
+.atmosphere[data-moving="false"] .mist,
+.atmosphere[data-moving="false"] .nearMist {
+  animation-play-state: paused;
+}
+.headerActions,
+.sceneTools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.headerActions {
+  position: relative;
+  z-index: 12;
+}
+[data-map-open="true"] .headerActions [role="tooltip"] {
+  visibility: hidden;
+}
+.mapButton {
+  font-size: 12px;
+  color: var(--mi-accent);
+  padding: 0 14px;
+}
+.sceneTools {
+  position: absolute;
+  bottom: 12px;
+  right: 22px;
+  z-index: 10;
+  padding: 5px;
+  background: #ffffffeb;
+  border: 1px solid #dce5d7;
+  border-radius: 50px;
+  gap: 2px;
+  margin: 0;
+}
+.iconButton {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  color: #577560;
+  border-radius: 50%;
+}
+.iconButton[aria-pressed="true"] {
+  background: #edf4e8;
+}
+.gestureHint {
+  position: absolute;
+  left: 25px;
+  bottom: 26px;
+  z-index: 7;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: #83917f;
+  pointer-events: none;
+}
+.touchHint {
+  display: none;
+}
+.mapOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: #f5f8f0c9;
+}
+.mapPanel {
+  position: fixed;
+  z-index: 61;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100vw - 32px));
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px;
+  border: 2px solid #d9e3d1;
+  border-radius: 30px;
+  background: #ffffff;
+  box-shadow: 0 16px 65px #536c4b19;
+  font-family: var(--mi-font);
+  color: var(--mi-ink);
+}
+.mapHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mapTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+.mapDescription {
+  font-size: 12px;
+  color: var(--mi-muted);
+  margin: 16px 0;
+}
+.mapSketch {
+  position: relative;
+  padding: 0;
+  aspect-ratio: 5 / 3;
+  border: 1px solid #e3ebdc;
+  background:
+    radial-gradient(ellipse at 50% 60%, #eef5e9aa, transparent), #fcfdfb;
+  overflow: hidden;
+}
+.mapSketch svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.mapMarker {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin-left: -22px;
+  margin-top: -22px;
+  color: #567d63;
+  background: #ffffffbb;
+  border: 1px solid #d8e4d0;
+}
+.mapList {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+.mapLink {
+  height: auto;
+  min-height: 76px;
+  padding: 10px;
+  white-space: normal;
+  border-radius: 20px;
+}
+.mapLink > span {
+  width: 100%;
+}
+.mapIcon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  background: #edf4e8;
+  color: #5c7e62;
+  flex-shrink: 0;
+}
+.mapLinkText {
+  display: grid;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+.mapLinkText strong {
+  font-size: 14px;
+}
+.mapLinkText small {
+  font-size: 11px;
+  line-height: 1.7;
+  font-weight: 400;
+  color: var(--mi-muted);
+}
+@keyframes forest-mist {
+  from {
+    transform: translate3d(-18px, 0, 0);
+  }
+  to {
+    transform: translate3d(22px, -8px, 0);
+  }
+}
+@media (max-width: 640px) {
+  .navLabel,
+  .desktopHint {
+    display: none;
+  }
+  .touchHint {
+    display: inline;
+  }
+  .mapButton {
+    width: 40px;
+    padding: 0;
+  }
+  .headerActions {
+    gap: 2px;
+  }
+  .sceneTools {
+    right: 8px;
+    bottom: 8px;
+  }
+  .gestureHint {
+    left: 10px;
+    bottom: 24px;
+    font-size: 9px;
+  }
+  .forest {
+    height: 42%;
+    opacity: 0.12;
+  }
+  .mapPanel {
+    padding: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mist,
+  .nearMist {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  [data-chat-open="true"] .sceneTools,
+  [data-chat-open="true"] .gestureHint {
+    display: none;
+  }
+}
+
+/* Theme the pinned library Title's inner paper layer without hash selectors. */
+.mapTitle > span > span {
+  --rf: #edf3e6;
+  --rb: #d7e2cd;
+  --rk: #8eab87;
+  --rt: #43604a;
+}

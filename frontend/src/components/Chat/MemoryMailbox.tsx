@@ -1,6 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog"
+import { Card, Switch } from "animal-island-ui"
 import { ArrowLeft, Mail, Plus } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import styles from "./chat.module.css"
 import { MemoryConsentDialog } from "./MemoryConsentDialog"
 import { MemoryEditor } from "./MemoryEditor"
@@ -67,7 +69,11 @@ export function MemoryMailbox({
   useEffect(() => {
     if (!settings?.auto_extract) return
     const id = window.setInterval(() => {
-      if (!busy && !editor && !document.hidden) void read().catch(() => {})
+      if (!busy && !editor && !document.hidden)
+        void read().catch(() => {
+          if (lifecycle.current && !lifecycle.current.signal.aborted)
+            setError("提取状态暂时无法刷新，请重新载入；尚未确认新增记忆。")
+        })
     }, 3000)
     return () => clearInterval(id)
   }, [settings?.auto_extract, busy, editor, read])
@@ -118,7 +124,7 @@ export function MemoryMailbox({
       }}
     >
       <header className={styles.historyHeader}>
-        <button
+        <IslandButton
           ref={back}
           className={styles.iconButton}
           type="button"
@@ -126,7 +132,7 @@ export function MemoryMailbox({
           onClick={onClose}
         >
           <ArrowLeft size={19} />
-        </button>
+        </IslandButton>
         <div>
           <h2>记忆信箱</h2>
           <span>只留下一些真正有用的事</span>
@@ -134,32 +140,30 @@ export function MemoryMailbox({
         <Mail size={22} strokeWidth={1.2} aria-hidden="true" />
       </header>
       <div className={styles.memoryScroll}>
-        <div className={styles.memorySettings}>
-          <label>
+        <Card className={styles.memorySettings}>
+          <div className={styles.memorySetting}>
             <span>
               自动记忆<small>只提取今后的普通聊天，可随时暂停</small>
             </span>
-            <input
-              type="checkbox"
+            <Switch
               aria-label="自动记忆"
               checked={Boolean(settings?.auto_extract)}
               disabled={!settings || busy}
-              onChange={(e) => toggle("auto", e.target.checked)}
+              onChange={(checked) => toggle("auto", checked)}
             />
-          </label>
-          <label>
+          </div>
+          <div className={styles.memorySetting}>
             <span>
               使用已有记忆<small>关闭后不向模型注入记忆</small>
             </span>
-            <input
-              type="checkbox"
+            <Switch
               aria-label="使用已有记忆"
               checked={Boolean(settings?.use_memories)}
               disabled={!settings || busy}
-              onChange={(e) => toggle("use", e.target.checked)}
+              onChange={(checked) => toggle("use", checked)}
             />
-          </label>
-        </div>
+          </div>
+        </Card>
         <p className={styles.memoryPrivacy}>
           临时聊天完全隔离。记忆存放在本机未加密 SQLite；自动提取可能增加模型
           API 费用。
@@ -167,27 +171,27 @@ export function MemoryMailbox({
         {error && (
           <div className={styles.error} role="alert">
             <p>{error}</p>
-            <button type="button" onClick={() => void perform(read)}>
+            <IslandButton type="button" onClick={() => void perform(read)}>
               重新载入
-            </button>
+            </IslandButton>
           </div>
         )}
         <div className={styles.memoryActions}>
-          <button
+          <IslandButton
             type="button"
             disabled={busy}
             onClick={() => setEditor("new")}
           >
             <Plus size={15} />
             新增记忆
-          </button>
-          <button
+          </IslandButton>
+          <IslandButton
             type="button"
             disabled={busy || !memories.some((m) => m.source_type === "auto")}
             onClick={() => setDeletion("all")}
           >
             删除全部自动记忆
-          </button>
+          </IslandButton>
         </div>
         {editor && (
           <MemoryEditor
@@ -206,7 +210,8 @@ export function MemoryMailbox({
           </div>
         )}
         {memories.map((memory) => (
-          <article
+          <Card
+            role="article"
             key={memory.id}
             className={styles.memoryCard}
             data-review={memory.review_status}
@@ -242,21 +247,21 @@ export function MemoryMailbox({
                 />
                 启用
               </label>
-              <button
+              <IslandButton
                 type="button"
                 disabled={busy}
                 onClick={() => setEditor(memory)}
               >
                 {memory.review_status === "pending" ? "核对" : "编辑"}
-              </button>
-              <button
+              </IslandButton>
+              <IslandButton
                 type="button"
                 disabled={busy}
                 onClick={() => setDeletion(memory)}
                 aria-label={`删除记忆 ${memory.content}`}
               >
                 删除
-              </button>
+              </IslandButton>
             </div>
             <footer>
               <time dateTime={memory.updated_at}>
@@ -267,7 +272,7 @@ export function MemoryMailbox({
                   <summary>来源 · {memory.sources.length} 条</summary>
                   {memory.sources.map((source) => (
                     <div key={source.message_id}>
-                      <button
+                      <IslandButton
                         type="button"
                         onClick={async () => {
                           if (await onSource(source.conversation_id)) onClose()
@@ -276,7 +281,7 @@ export function MemoryMailbox({
                         }}
                       >
                         {source.conversation_title}
-                      </button>
+                      </IslandButton>
                       <blockquote>{source.evidence}</blockquote>
                     </div>
                   ))}
@@ -289,7 +294,7 @@ export function MemoryMailbox({
                 </span>
               )}
             </footer>
-          </article>
+          </Card>
         ))}
         <div className={styles.memoryJobStatus}>
           <strong>提取状态</strong>
@@ -299,14 +304,18 @@ export function MemoryMailbox({
               : latest.status === "pending" || latest.status === "running"
                 ? "正在整理，不影响聊天…"
                 : latest.status === "completed"
-                  ? `最近一次：新增 ${latest.added_count}，更新 ${latest.updated_count}，待核对 ${latest.review_count}。`
+                  ? latest.added_count ||
+                    latest.updated_count ||
+                    latest.review_count
+                    ? `最近一次：新增 ${latest.added_count}，更新 ${latest.updated_count}，待核对 ${latest.review_count}。`
+                    : "最近一次已检查，未新增或更新记忆；可能没有符合规则的新信息。"
                   : (jobErrors[latest.error_code ?? ""] ??
                     "最近一次提取未成功；不会自动重复调用。")}
           </p>
           {latest?.status === "failed" &&
             latest.attempts < (status?.max_attempts ?? 1) &&
             Boolean(settings?.auto_extract) && (
-              <button
+              <IslandButton
                 type="button"
                 disabled={busy}
                 onClick={() =>
@@ -314,7 +323,7 @@ export function MemoryMailbox({
                 }
               >
                 重试提取（可能增加 API 费用）
-              </button>
+              </IslandButton>
             )}
           <small>
             {status?.mode === "mock"
@@ -365,15 +374,18 @@ export function MemoryMailbox({
               已排队的旧提取任务将取消；今后的新聊天仍按开关设置处理。
             </Dialog.Description>
             <div className={styles.dialogActions}>
-              <button
+              <IslandButton
                 type="button"
                 disabled={busy}
                 onClick={() => setDeletion(null)}
               >
                 保留记忆
-              </button>
-              <button
+              </IslandButton>
+              <IslandButton
                 className={styles.deleteConfirm}
+                variant="primary"
+                danger
+                data-danger="true"
                 type="button"
                 disabled={busy}
                 onClick={() =>
@@ -385,7 +397,7 @@ export function MemoryMailbox({
                 }
               >
                 确认删除记忆
-              </button>
+              </IslandButton>
             </div>
           </Dialog.Content>
         </Dialog.Portal>

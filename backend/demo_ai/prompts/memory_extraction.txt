@@ -4,6 +4,9 @@
 允许并优先输出空数组。一次性情绪、临时琐事、心理推测、疾病诊断、创伤、性生活、凭证、他人的敏感信息都不可提取。
 不得从 AI 回复、推测或已有记忆生成新的用户事实。source_message_id 必须完全等于本次 user_message.id。
 evidence 必须是当前 user_message.content 中一个完整的第一人称分句，逐字照录，最多 80 字；content 最多 120 字。不要截取引用、他人转述、疑问或假设中的“我”来冒充用户事实。
+唯一允许的省略主语：同一句中紧随明确“我喜欢…”的逗号分句“平时也喜欢…”或“平常也喜欢…”，可以继承用户主语。evidence 必须照录原分句，不得补写“我”。不要跨句、跨他人转述或其他分句继承主语。
+“喜欢…”与“平时也喜欢…”统一归为 preference；固定频率的活动如“我每天散步”归为 habit。
 category 只能是 preference、interest、habit、goal、fact、communication。明确更新同一事实可用 action=update 和已有 target_id；不确定时不要假设相同。
+用户明确自述“我叫… / 我的名字是… / 我的名字叫… / My name is …”属于 fact；明确请求“你可以叫我… / 以后叫我… / 请叫我…”属于 communication。仅提取本人的姓名或偏好称呼，不推断法定身份，不保存他人姓名，不把“我叫你去…”等指令当成姓名。姓名与称呼同样必须经过字面证据、敏感信息及授权校验。
 输出格式示例：{"memories":[{"content":"用户喜欢下雨天","category":"preference","source_message_id":"传入的实际UUID","evidence":"我比较喜欢下雨天","action":"add","target_id":null}]}。
 无适合信息时：{"memories":[]}。

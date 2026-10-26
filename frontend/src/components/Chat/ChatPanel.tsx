@@ -1,12 +1,21 @@
-import { ChevronDown, ChevronUp, History, Leaf, Trash2, X } from "lucide-react"
+import {
+  ChevronDown,
+  ChevronUp,
+  History,
+  Hourglass,
+  Leaf,
+  MessageCircle,
+  Trash2,
+  X,
+} from "lucide-react"
 import { type CSSProperties, useEffect, useRef, useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import { ChatComposer } from "./ChatComposer"
 import { ChatError } from "./ChatError"
 import { ChatMessage } from "./ChatMessage"
 import { ConversationDrawer } from "./ConversationDrawer"
 import styles from "./chat.module.css"
 import { DeleteConversationDialog } from "./DeleteConversationDialog"
-import { EmptyChat } from "./EmptyChat"
 import { MemoryMailbox } from "./MemoryMailbox"
 import type { useCompanionChat } from "./useCompanionChat"
 import { useMemoryStatus } from "./useMemoryStatus"
@@ -76,10 +85,10 @@ export function ChatPanel({
   }, [open, lastMessage])
   if (!open) return null
   const modeLabel = {
-    mock: "模拟模式 · 未调用真实 AI",
-    live: "AI 陪伴",
-    unconfigured: "AI 尚未配置",
-    offline: "本机代理未连接",
+    mock: "模拟",
+    live: "",
+    unconfigured: "未配置",
+    offline: "未连接",
   }[chat.mode]
   return (
     <div
@@ -117,16 +126,45 @@ export function ChatPanel({
           aria-hidden={historyOpen || memoryOpen}
         >
           <header className={styles.header}>
-            <div className={styles.avatar}>
-              <Leaf size={22} strokeWidth={1.4} aria-hidden="true" />
-            </div>
             <div className={styles.heading}>
               <h2 id="companion-chat-title">
-                {chat.temporary ? "临时坐一会儿" : "和小屿坐一会儿"}
+                {chat.temporary ? "临时聊天" : "小屿"}
               </h2>
-              <span data-testid="chat-mode">{modeLabel}</span>
+              {modeLabel && <span data-testid="chat-mode">{modeLabel}</span>}
             </div>
-            <button
+            {!chat.temporary && (
+              <IslandButton
+                className={styles.iconButton}
+                ref={memoryButton}
+                type="button"
+                aria-label="记忆信箱"
+                title="记忆信箱"
+                onClick={() => setMemoryOpen(true)}
+              >
+                <Leaf size={19} />
+              </IslandButton>
+            )}
+            <IslandButton
+              className={styles.iconButton}
+              type="button"
+              aria-label={chat.temporary ? "普通聊天" : "临时聊天"}
+              aria-pressed={chat.temporary}
+              title={
+                chat.temporary ? "返回普通聊天" : "临时聊天 · 关闭或刷新后清除"
+              }
+              disabled={chat.loading}
+              onClick={() => {
+                if (chat.temporary) void chat.restore()
+                else void chat.startTemporary()
+              }}
+            >
+              {chat.temporary ? (
+                <MessageCircle size={18} />
+              ) : (
+                <Hourglass size={18} />
+              )}
+            </IslandButton>
+            <IslandButton
               className={styles.iconButton}
               type="button"
               aria-label="历史对话"
@@ -134,8 +172,8 @@ export function ChatPanel({
               onClick={() => setHistoryOpen(true)}
             >
               <History size={19} />
-            </button>
-            <button
+            </IslandButton>
+            <IslandButton
               className={`${styles.iconButton} ${styles.expand}`}
               type="button"
               aria-label={expanded ? "收起聊天面板" : "扩大聊天面板"}
@@ -146,8 +184,8 @@ export function ChatPanel({
               }}
             >
               {expanded ? <ChevronDown size={19} /> : <ChevronUp size={19} />}
-            </button>
-            <button
+            </IslandButton>
+            <IslandButton
               className={styles.iconButton}
               type="button"
               onClick={() => {
@@ -158,8 +196,8 @@ export function ChatPanel({
               aria-label="清空当前聊天"
             >
               <Trash2 size={17} />
-            </button>
-            <button
+            </IslandButton>
+            <IslandButton
               ref={close}
               className={styles.iconButton}
               type="button"
@@ -167,42 +205,12 @@ export function ChatPanel({
               aria-label="关闭聊天"
             >
               <X size={20} />
-            </button>
+            </IslandButton>
           </header>
-          <p className={styles.notice}>
-            小屿是 AI
-            陪伴角色，不是心理治疗师。真实对话会发送给所配置的模型供应商。
-          </p>
-          <div className={styles.sessionBar}>
-            <span title={chat.conversation?.title}>
-              {chat.temporary
-                ? "不保存历史 · 关闭或刷新后清除"
-                : (chat.conversation?.title ?? "新的对话 · 保存在本机服务端")}
-            </span>
-            {!chat.temporary && (
-              <button
-                ref={memoryButton}
-                type="button"
-                onClick={() => setMemoryOpen(true)}
-              >
-                记忆信箱
-              </button>
-            )}
-            <button
-              type="button"
-              disabled={chat.loading}
-              onClick={() => {
-                if (chat.temporary) void chat.restore()
-                else void chat.startTemporary()
-              }}
-            >
-              {chat.temporary ? "普通聊天" : "临时聊天"}
-            </button>
-          </div>
           {memory.notice && !chat.temporary && (
             <div className={styles.memoryNotice} role="status">
               <span>{memory.notice}</span>
-              <button
+              <IslandButton
                 type="button"
                 onClick={() => {
                   memory.dismiss()
@@ -210,14 +218,14 @@ export function ChatPanel({
                 }}
               >
                 查看
-              </button>
-              <button
+              </IslandButton>
+              <IslandButton
                 type="button"
                 aria-label="忽略记忆提示"
                 onClick={memory.dismiss}
               >
                 ×
-              </button>
+              </IslandButton>
             </div>
           )}
           {lastMessage?.memoryWarning && !chat.temporary && (
@@ -228,9 +236,9 @@ export function ChatPanel({
           {chat.historyError && !chat.temporary && (
             <div className={styles.historyWarning} role="alert">
               <span>{chat.historyError}</span>
-              <button type="button" onClick={() => void chat.restore()}>
+              <IslandButton type="button" onClick={() => void chat.restore()}>
                 重新载入
-              </button>
+              </IslandButton>
             </div>
           )}
           <div
@@ -246,39 +254,31 @@ export function ChatPanel({
                   list.scrollHeight - list.scrollTop - list.clientHeight < 64
             }}
           >
-            {chat.messages.length ? (
-              chat.messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  message={message}
-                  temporary={chat.temporary}
-                />
-              ))
-            ) : (
-              <EmptyChat />
-            )}
+            {chat.messages.map((message) => (
+              <ChatMessage
+                key={message.id}
+                message={message}
+                temporary={chat.temporary}
+              />
+            ))}
             {chat.error && (
               <ChatError error={chat.error} onRetry={chat.retry} />
             )}
             {chat.hasPending && (
               <p className={styles.historyWarning}>
                 有回复尚在服务端处理。
-                <button type="button" onClick={() => void chat.restore()}>
+                <IslandButton type="button" onClick={() => void chat.restore()}>
                   刷新历史
-                </button>
+                </IslandButton>
               </p>
             )}
           </div>
-          <div className={styles.replyStatus} role="status" aria-live="polite">
+          <div className="sr-only" role="status" aria-live="polite">
             {chat.generating
               ? "小屿正在回复…"
               : chat.loading
                 ? "正在确认历史状态…"
-                : chat.temporary
-                  ? "临时聊天不会保存历史"
-                  : chat.messages.length
-                    ? "历史保存在本机 Demo 服务端"
-                    : "历史保存在本机 · 长期记忆由你控制"}
+                : ""}
           </div>
           <ChatComposer
             key={chat.composerKey}

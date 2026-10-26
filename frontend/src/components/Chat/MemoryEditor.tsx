@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import styles from "./chat.module.css"
 import {
   type Memory,
@@ -45,6 +46,7 @@ export function MemoryEditor({
       <label>
         记忆内容
         <textarea
+          aria-label="记忆内容"
           value={content}
           maxLength={240}
           rows={3}
@@ -55,6 +57,7 @@ export function MemoryEditor({
       <label>
         分类
         <select
+          aria-label="分类"
           value={category}
           onChange={(e) => setCategory(e.target.value as MemoryCategory)}
         >
@@ -86,16 +89,17 @@ export function MemoryEditor({
         不要保存密码、API Key 或身份号码。手动保存后，自动任务不会覆盖你的编辑。
       </small>
       <div className={styles.dialogActions}>
-        <button type="button" onClick={onCancel} disabled={busy}>
+        <IslandButton type="button" onClick={onCancel} disabled={busy}>
           取消编辑
-        </button>
-        <button
+        </IslandButton>
+        <IslandButton
           className={styles.deleteConfirm}
+          variant="primary"
           type="submit"
           disabled={busy || !content.trim()}
         >
           {busy ? "正在保存…" : pending ? "核对并保存" : "保存记忆"}
-        </button>
+        </IslandButton>
       </div>
     </form>
   )

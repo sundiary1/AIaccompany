@@ -8,6 +8,10 @@ import { defineConfig } from "vite"
 export default defineConfig({
   server: {
     proxy: {
+      "/api/demo/sandplay": {
+        target: "http://127.0.0.1:8001",
+        changeOrigin: false,
+      },
       "/api/demo/chat": {
         target: "http://127.0.0.1:8001",
         changeOrigin: false,

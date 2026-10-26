@@ -1,6 +1,7 @@
 """Small regression suite for the publication boundary; no credentials/network."""
 
 import importlib.util
+import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,6 +15,26 @@ SPEC.loader.exec_module(CHECK)
 
 
 class RepositoryCheckTests(unittest.TestCase):
+    def test_worktree_scan_skips_tracked_files_deleted_from_disk(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "kept.txt").write_text("public content", encoding="utf-8")
+
+            def git_output(*arguments):
+                if "--deleted" in arguments:
+                    return b"removed.txt\0"
+                return b"kept.txt\0removed.txt\0"
+
+            with (
+                patch.object(CHECK, "ROOT", root),
+                patch.object(CHECK, "git", side_effect=git_output),
+                patch.object(CHECK, "local_secrets", return_value=[]),
+                patch("sys.argv", ["check_repository.py"]),
+                patch("sys.stdout", new_callable=io.StringIO) as output,
+            ):
+                self.assertFalse(CHECK.main())
+                self.assertIn("1 files, 0 errors", output.getvalue())
+
     def test_private_paths_are_rejected_even_with_an_example_filename(self):
         for name in [
             ".env",

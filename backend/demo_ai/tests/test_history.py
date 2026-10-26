@@ -108,7 +108,7 @@ class HistoryTests(unittest.TestCase):
             identifier = self.create(c)
             self.send(c, identifier)
         with closing(sqlite3.connect(self.path)) as db:
-            db.execute("PRAGMA user_version=3")
+            db.execute("PRAGMA user_version=4")
         with self.client() as c:
             response = c.get("/api/demo/conversations")
             self.assertEqual(response.json()["error"]["code"], "schema_version")
@@ -423,7 +423,7 @@ class HistoryTests(unittest.TestCase):
             identifier = self.create(c)
             self.send(c, identifier)
             with closing(sqlite3.connect(self.path)) as db:
-                self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 2)
+                self.assertEqual(db.execute("PRAGMA user_version").fetchone()[0], 3)
                 self.assertEqual(
                     db.execute("PRAGMA integrity_check").fetchone()[0], "ok"
                 )

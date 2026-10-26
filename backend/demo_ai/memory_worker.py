@@ -1,6 +1,5 @@
 import asyncio
 import json
-import re
 from dataclasses import replace
 from pathlib import Path
 
@@ -10,7 +9,7 @@ from pydantic import ValidationError
 
 from .database import StorageError
 from .memory_models import Candidate, Extraction
-from .memory_rules import derive, eligible_source
+from .memory_rules import eligible_source, source_facts
 from .provider import AIError, ChatCompletionsProvider
 
 EXTRACTION_PROMPT = (Path(__file__).parent / "prompts/memory_extraction.txt").read_text(
@@ -53,9 +52,7 @@ class MockExtractor:
 
     async def extract(self, source, _existing):
         candidates = []
-        for clause in re.split(r"[。！!；;，,\n]", source["content"]):
-            evidence = clause.strip()
-            fact = derive(evidence)
+        for evidence, fact in source_facts(source["content"]):
             if fact and len(evidence) <= 180:
                 candidates.append(
                     Candidate(
@@ -96,10 +93,9 @@ class MemoryWorker:
         task = None
         try:
             # Screen the whole source BEFORE sending it to a second model.
-            if not eligible_source(source["content"], self.settings.api_key) or not any(
-                derive(part.strip())
-                for part in re.split(r"[。！!；;，,\n]", source["content"])
-            ):
+            if not eligible_source(
+                source["content"], self.settings.api_key
+            ) or not source_facts(source["content"]):
                 await self.repository.finish_job(job, [])
                 return True
             if not self.extractor.is_mock:

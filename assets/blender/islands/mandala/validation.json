@@ -1,0 +1,32 @@
+{
+  "source_mesh_and_curve_objects": 624,
+  "source_unchanged": true,
+  "excluded": "Bg, cameras, lights, probes and hidden objects",
+  "triangles": 72843,
+  "materials": 13,
+  "bytes": 5319448,
+  "blender_bounds": {
+    "min": [
+      -4.0,
+      -4.0,
+      -2.058631420135498
+    ],
+    "max": [
+      4.0,
+      4.0,
+      6.5598320960998535
+    ],
+    "size": [
+      8.0,
+      8.0,
+      8.618463516235352
+    ]
+  },
+  "material_fixes": [
+    {
+      "material": "window light",
+      "change": "emission converted to exportable Principled"
+    }
+  ],
+  "reimport": "passed; identical triangles and bounds, material slots present"
+}

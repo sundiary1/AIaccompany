@@ -1,5 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog"
 import { useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import styles from "./chat.module.css"
 
 export function MemoryConsentDialog({
@@ -55,17 +56,18 @@ export function MemoryConsentDialog({
             我已了解并授权所选功能
           </label>
           <div className={styles.dialogActions}>
-            <button type="button" onClick={onCancel} disabled={busy}>
+            <IslandButton type="button" onClick={onCancel} disabled={busy}>
               暂不开启
-            </button>
-            <button
+            </IslandButton>
+            <IslandButton
               className={styles.deleteConfirm}
+              variant="primary"
               type="button"
               disabled={!checked || busy}
               onClick={() => void onConfirm()}
             >
               {busy ? "正在开启…" : "确认开启"}
-            </button>
+            </IslandButton>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

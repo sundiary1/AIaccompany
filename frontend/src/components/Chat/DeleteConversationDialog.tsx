@@ -1,5 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog"
 import { useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import styles from "./chat.module.css"
 
 type Props = {
@@ -51,7 +52,7 @@ export function DeleteConversationDialog({
             <p role="alert">操作未确认成功，请关闭此窗口查看提示后重试。</p>
           )}
           <div className={styles.dialogActions}>
-            <button
+            <IslandButton
               type="button"
               onClick={() => {
                 setFailed(false)
@@ -60,11 +61,14 @@ export function DeleteConversationDialog({
               disabled={busy}
             >
               保留
-            </button>
-            <button
+            </IslandButton>
+            <IslandButton
               type="button"
               disabled={busy}
               className={styles.deleteConfirm}
+              variant="primary"
+              danger
+              data-danger="true"
               onClick={async () => {
                 setBusy(true)
                 try {
@@ -77,7 +81,7 @@ export function DeleteConversationDialog({
               }}
             >
               {busy ? "正在处理…" : clearOnly ? "确认清空" : "确认删除"}
-            </button>
+            </IslandButton>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

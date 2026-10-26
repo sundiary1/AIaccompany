@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as IslandPreviewRouteImport } from './routes/island-preview'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MandalaRouteImport } from './routes/mandala'
+import { Route as MindfulnessRouteImport } from './routes/mindfulness'
 import { Route as RecoverPasswordRouteImport } from './routes/recover-password'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SandplayRouteImport } from './routes/sandplay'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutAdminRouteImport } from './routes/_layout/admin'
@@ -34,6 +37,16 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MandalaRoute = MandalaRouteImport.update({
+  id: '/mandala',
+  path: '/mandala',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MindfulnessRoute = MindfulnessRouteImport.update({
+  id: '/mindfulness',
+  path: '/mindfulness',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
   id: '/recover-password',
   path: '/recover-password',
@@ -42,6 +55,11 @@ const RecoverPasswordRoute = RecoverPasswordRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SandplayRoute = SandplayRouteImport.update({
+  id: '/sandplay',
+  path: '/sandplay',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -74,8 +92,11 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/island-preview': typeof IslandPreviewRoute
   '/login': typeof LoginRoute
+  '/mandala': typeof MandalaRoute
+  '/mindfulness': typeof MindfulnessRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sandplay': typeof SandplayRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
@@ -84,8 +105,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/island-preview': typeof IslandPreviewRoute
   '/login': typeof LoginRoute
+  '/mandala': typeof MandalaRoute
+  '/mindfulness': typeof MindfulnessRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sandplay': typeof SandplayRoute
   '/signup': typeof SignupRoute
   '/admin': typeof LayoutAdminRoute
   '/items': typeof LayoutItemsRoute
@@ -97,8 +121,11 @@ export interface FileRoutesById {
   '/_layout': typeof LayoutRouteWithChildren
   '/island-preview': typeof IslandPreviewRoute
   '/login': typeof LoginRoute
+  '/mandala': typeof MandalaRoute
+  '/mindfulness': typeof MindfulnessRoute
   '/recover-password': typeof RecoverPasswordRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sandplay': typeof SandplayRoute
   '/signup': typeof SignupRoute
   '/_layout/admin': typeof LayoutAdminRoute
   '/_layout/items': typeof LayoutItemsRoute
@@ -111,8 +138,11 @@ export interface FileRouteTypes {
     | '/'
     | '/island-preview'
     | '/login'
+    | '/mandala'
+    | '/mindfulness'
     | '/recover-password'
     | '/reset-password'
+    | '/sandplay'
     | '/signup'
     | '/admin'
     | '/items'
@@ -121,8 +151,11 @@ export interface FileRouteTypes {
   to:
     | '/island-preview'
     | '/login'
+    | '/mandala'
+    | '/mindfulness'
     | '/recover-password'
     | '/reset-password'
+    | '/sandplay'
     | '/signup'
     | '/admin'
     | '/items'
@@ -133,8 +166,11 @@ export interface FileRouteTypes {
     | '/_layout'
     | '/island-preview'
     | '/login'
+    | '/mandala'
+    | '/mindfulness'
     | '/recover-password'
     | '/reset-password'
+    | '/sandplay'
     | '/signup'
     | '/_layout/admin'
     | '/_layout/items'
@@ -146,8 +182,11 @@ export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
   IslandPreviewRoute: typeof IslandPreviewRoute
   LoginRoute: typeof LoginRoute
+  MandalaRoute: typeof MandalaRoute
+  MindfulnessRoute: typeof MindfulnessRoute
   RecoverPasswordRoute: typeof RecoverPasswordRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SandplayRoute: typeof SandplayRoute
   SignupRoute: typeof SignupRoute
 }
 
@@ -174,6 +213,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mandala': {
+      id: '/mandala'
+      path: '/mandala'
+      fullPath: '/mandala'
+      preLoaderRoute: typeof MandalaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mindfulness': {
+      id: '/mindfulness'
+      path: '/mindfulness'
+      fullPath: '/mindfulness'
+      preLoaderRoute: typeof MindfulnessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recover-password': {
       id: '/recover-password'
       path: '/recover-password'
@@ -186,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sandplay': {
+      id: '/sandplay'
+      path: '/sandplay'
+      fullPath: '/sandplay'
+      preLoaderRoute: typeof SandplayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -247,8 +307,11 @@ const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
   IslandPreviewRoute: IslandPreviewRoute,
   LoginRoute: LoginRoute,
+  MandalaRoute: MandalaRoute,
+  MindfulnessRoute: MindfulnessRoute,
   RecoverPasswordRoute: RecoverPasswordRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SandplayRoute: SandplayRoute,
   SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport

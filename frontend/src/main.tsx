@@ -12,6 +12,9 @@ import { client } from "./client/client.gen"
 import { ThemeProvider } from "./components/theme-provider"
 import { Toaster } from "./components/ui/sonner"
 import "./index.css"
+import "animal-island-ui/style"
+import "animal-island-ui/es/components/Cursor/cursor.css"
+import "./components/IslandUI/island-theme.css"
 import { routeTree } from "./routeTree.gen"
 
 client.setConfig({

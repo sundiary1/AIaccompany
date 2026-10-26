@@ -1,5 +1,7 @@
+import { Input } from "animal-island-ui"
 import { Check, Pencil, Trash2, X } from "lucide-react"
 import { useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import styles from "./chat.module.css"
 import type { Conversation } from "./conversation-api"
 
@@ -35,31 +37,32 @@ export function ConversationItem({
           <label className="sr-only" htmlFor={`rename-${conversation.id}`}>
             会话标题
           </label>
-          <input
+          <Input
+            className={styles.renameInput}
             id={`rename-${conversation.id}`}
             value={title}
             maxLength={80}
             onChange={(event) => setTitle(event.target.value)}
             disabled={disabled}
           />
-          <button
+          <IslandButton
             type="submit"
             aria-label="保存标题"
             disabled={disabled || !title.trim()}
           >
             <Check size={17} />
-          </button>
-          <button
+          </IslandButton>
+          <IslandButton
             type="button"
             aria-label="取消重命名"
             onClick={() => setEditing(false)}
           >
             <X size={17} />
-          </button>
+          </IslandButton>
         </form>
       ) : (
         <>
-          <button
+          <IslandButton
             className={styles.conversationSelect}
             type="button"
             onClick={onSelect}
@@ -75,8 +78,8 @@ export function ConversationItem({
                 minute: "2-digit",
               })}
             </time>
-          </button>
-          <button
+          </IslandButton>
+          <IslandButton
             className={styles.iconButton}
             type="button"
             aria-label={`重命名 ${conversation.title}`}
@@ -87,8 +90,8 @@ export function ConversationItem({
             }}
           >
             <Pencil size={16} />
-          </button>
-          <button
+          </IslandButton>
+          <IslandButton
             className={styles.iconButton}
             type="button"
             aria-label={`删除 ${conversation.title}`}
@@ -96,7 +99,7 @@ export function ConversationItem({
             onClick={onDelete}
           >
             <Trash2 size={16} />
-          </button>
+          </IslandButton>
         </>
       )}
     </li>

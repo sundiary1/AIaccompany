@@ -14,12 +14,13 @@
   height: 100%;
   overflow: hidden;
   pointer-events: auto;
-  border: 1px solid #d8decd;
-  border-radius: 24px;
-  background: #faf7ef;
-  color: #394a3d;
-  box-shadow: 0 16px 60px #394a3d12;
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  border: 2px solid var(--mi-line);
+  border-radius: 30px;
+  background: #ffffff;
+  color: var(--mi-ink);
+  box-shadow: var(--mi-shadow);
+  font-family: var(--mi-font);
+  font-weight: 500;
   color-scheme: light;
 }
 .chatContent {
@@ -27,27 +28,6 @@
   flex: 1;
   min-height: 0;
   flex-direction: column;
-}
-.sessionBar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 20px 0;
-  font-size: 10px;
-  color: #718164;
-}
-.sessionBar > span {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.sessionBar button {
-  flex-shrink: 0;
-  min-height: 34px;
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 .historyWarning {
   margin: 8px 20px;
@@ -66,7 +46,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #faf7ef;
+  background: #ffffff;
 }
 .historyHeader {
   display: flex;
@@ -77,12 +57,12 @@
 .historyHeader h2 {
   margin: 0 0 4px;
   font-size: 23px;
-  font-weight: 400;
-  font-family: "Songti SC", SimSun, serif;
+  font-weight: 700;
+  font-family: var(--mi-font);
 }
 .historyHeader span {
   font-size: 10px;
-  color: #7b8870;
+  color: var(--mi-muted);
 }
 .historyActions {
   display: flex;
@@ -96,10 +76,10 @@
   gap: 8px;
   flex: 1;
   min-height: 44px;
-  border: 1px solid #cdd6be;
+  border: 1px solid var(--mi-line);
   border-radius: 14px;
-  background: #eaf0e0;
-  color: #5c744e;
+  background: var(--mi-mint);
+  color: var(--mi-accent);
   font-size: 12px;
 }
 .historyActions .temporaryAction {
@@ -108,7 +88,7 @@
 .historyPrivacy {
   padding: 12px 22px;
   margin: 0;
-  color: #747d6b;
+  color: var(--mi-muted);
   font-size: 10px;
   line-height: 1.8;
 }
@@ -134,14 +114,16 @@
   border-radius: 16px;
 }
 .conversationItem[data-active="true"] {
-  background: #edf1e5;
-  border-color: #dce3cf;
+  background: var(--mi-mint);
+  border-color: var(--mi-line);
 }
 .conversationSelect {
   text-align: left;
   flex: 1;
   min-width: 0;
   padding: 5px 0;
+  height: auto;
+  justify-content: flex-start;
 }
 .conversationSelect > span {
   display: block;
@@ -149,12 +131,14 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
-  color: #475d3e;
+  color: var(--mi-heading);
+  width: 100%;
+  text-align: left;
 }
 .conversationSelect time {
   display: block;
   padding-top: 7px;
-  color: #86907b;
+  color: var(--mi-muted);
   font-size: 10px;
 }
 .renameForm {
@@ -162,14 +146,14 @@
   gap: 4px;
   width: 100%;
 }
-.renameForm input {
+.renameInput {
   min-width: 0;
   flex: 1;
-  border: 1px solid #c4d1b4;
-  border-radius: 9px;
-  background: #fffdf7;
-  padding: 5px 8px;
-  font-size: 13px;
+  width: 0;
+}
+.renameForm input {
+  border: 0;
+  padding: 0;
 }
 .renameForm button {
   display: grid;
@@ -189,7 +173,7 @@
 }
 .historyEmpty p {
   margin: 0;
-  font-family: "Songti SC", SimSun, serif;
+  font-family: var(--mi-font);
   font-size: 20px;
 }
 .historyEmpty span {
@@ -199,7 +183,7 @@
 .historyFooter {
   padding: 16px 22px max(18px, env(safe-area-inset-bottom));
   font-size: 10px;
-  color: #87927c;
+  color: var(--mi-muted);
 }
 .loadMore {
   display: block;
@@ -207,7 +191,7 @@
   min-height: 44px;
   padding: 8px 20px;
   font-size: 12px;
-  color: #657d58;
+  color: var(--mi-accent);
 }
 .deleteOverlay {
   position: fixed;
@@ -225,17 +209,17 @@
   width: min(380px, calc(100vw - 32px));
   padding: 28px;
   border-radius: 22px;
-  border: 1px solid #d6dfc8;
-  background: #faf7ef;
-  color: #41513a;
+  border: 1px solid var(--mi-line);
+  background: #ffffff;
+  color: var(--mi-ink);
   pointer-events: auto;
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: var(--mi-font);
 }
 .deleteDialog h2 {
   margin: 0 0 18px;
   font-size: 23px;
-  font-family: "Songti SC", SimSun, serif;
-  font-weight: 400;
+  font-family: var(--mi-font);
+  font-weight: 700;
 }
 .deleteDialog p {
   font-size: 12px;
@@ -252,7 +236,7 @@
   padding: 10px 18px;
   min-height: 44px;
   border-radius: 12px;
-  border: 1px solid #c6d2b8;
+  border: 1px solid var(--mi-border);
   font-size: 12px;
 }
 .dialogActions .deleteConfirm {
@@ -268,31 +252,22 @@
   align-items: center;
   gap: 8px;
   padding: 18px 14px 14px 20px;
+  border-bottom: 1px solid var(--mi-line);
   flex-shrink: 0;
-}
-.avatar {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: #e5ebda;
-  color: #657d58;
 }
 .heading {
   flex: 1;
   min-width: 0;
 }
 .heading h2 {
-  font-family: "Songti SC", SimSun, serif;
-  font-size: 20px;
-  font-weight: 400;
+  font-family: var(--mi-font);
+  font-size: 22px;
+  font-weight: 700;
   margin: 0 0 4px;
 }
 .heading span {
   display: block;
-  color: #6a755f;
+  color: var(--mi-muted);
   font-size: 10px;
 }
 .iconButton {
@@ -302,6 +277,8 @@
   height: 44px;
   border-radius: 12px;
   flex-shrink: 0;
+  padding: 0;
+  border-color: transparent;
   color: #65765c;
 }
 .iconButton:hover {
@@ -313,15 +290,6 @@
 .expand {
   display: none;
 }
-.notice {
-  margin: 0 20px;
-  padding: 0 0 14px;
-  border-bottom: 1px solid #e3e4d8;
-  font-size: 10px;
-  line-height: 1.8;
-  color: #747b6d;
-  flex-shrink: 0;
-}
 .messages {
   min-height: 0;
   flex: 1;
@@ -330,28 +298,6 @@
   padding: 18px 20px;
   scrollbar-width: thin;
   scrollbar-color: #ccd4bd transparent;
-}
-.empty {
-  display: flex;
-  min-height: 160px;
-  height: 100%;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: #7d916c;
-  gap: 15px;
-}
-.empty p {
-  margin: 0;
-  color: #4c5c45;
-  font-family: "Songti SC", SimSun, serif;
-  font-size: 22px;
-  line-height: 1.7;
-}
-.empty span {
-  font-size: 11px;
-  color: #7d8375;
 }
 .message {
   margin: 0 0 23px;
@@ -367,19 +313,25 @@
   margin: 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.95;
 }
 .message[data-role="user"] .messageText {
   padding: 11px 14px;
-  background: #eaf0df;
-  border-radius: 14px 14px 4px 14px;
+  background: var(--mi-mint);
+  border-radius: 22px 22px 12px 22px;
+}
+.message[data-role="user"] {
+  margin-left: 30px;
+}
+.message[data-role="user"] .speaker {
+  text-align: right;
 }
 .message small {
   display: block;
   margin-top: 5px;
   font-size: 10px;
-  color: #7a8072;
+  color: var(--mi-muted);
 }
 .message[data-status="error"] {
   opacity: 0.72;
@@ -411,12 +363,6 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.replyStatus {
-  min-height: 22px;
-  margin: 0 22px;
-  color: #7d8375;
-  font-size: 10px;
-}
 .composer {
   flex-shrink: 0;
   padding: 0 16px max(16px, env(safe-area-inset-bottom));
@@ -426,9 +372,9 @@
   align-items: flex-end;
   gap: 8px;
   padding: 10px 10px 10px 14px;
-  border: 1px solid #ccd5bd;
-  border-radius: 17px;
-  background: #fffcf6;
+  border: 2px solid var(--mi-border);
+  border-radius: 28px;
+  background: #ffffff;
 }
 .inputRow:focus-within {
   border-color: #829d6d;
@@ -446,7 +392,7 @@
   background: transparent;
   font-size: 14px;
   line-height: 1.7;
-  color: #394a3d;
+  color: var(--mi-ink);
 }
 .inputRow textarea::placeholder {
   color: #989e8e;
@@ -457,6 +403,7 @@
   width: 40px;
   height: 40px;
   flex-shrink: 0;
+  padding: 0;
   border-radius: 50%;
   color: #fffdf4;
   background: #6f875e;
@@ -467,14 +414,6 @@
 }
 .send:hover:not(:disabled) {
   background: #526e42;
-}
-.inputHint {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin: 7px 4px 0;
-  color: #818777;
-  font-size: 9px;
 }
 .panel button:focus-visible {
   outline: 2px solid #6c8758;
@@ -494,10 +433,11 @@
 }
 .memorySettings {
   padding: 8px 14px;
-  border-radius: 16px;
-  background: #eef0e5;
+  border-radius: 24px;
+  border: 2px solid var(--mi-line);
+  background: #ffffff;
 }
-.memorySettings label {
+.memorySetting {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -507,9 +447,15 @@
 }
 .memorySettings small {
   display: block;
-  color: #75816c;
+  color: var(--mi-muted);
   font-size: 11px;
   margin-top: 4px;
+}
+.memorySetting + .memorySetting {
+  border-top: 1px solid var(--mi-line);
+}
+.memorySettings button:focus-visible {
+  outline-color: var(--mi-focus);
 }
 .memorySettings input,
 .memoryCheck input,
@@ -521,7 +467,7 @@
 }
 .memoryPrivacy,
 .memoryJobStatus {
-  color: #7d8375;
+  color: var(--mi-muted);
   font-size: 11px;
   line-height: 1.7;
   margin: 14px 0;
@@ -540,7 +486,7 @@
 .memoryJobStatus button {
   min-height: 36px;
   font-size: 12px;
-  color: #647953;
+  color: var(--mi-accent);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -552,9 +498,9 @@
 .memoryCard {
   padding: 16px;
   margin-top: 12px;
-  border: 1px solid #dde1d1;
-  border-radius: 16px;
-  background: #fffdf7;
+  border: 2px solid var(--mi-line);
+  border-radius: 24px;
+  background: #ffffff;
 }
 .memoryCard[data-review="pending"] {
   border-color: #d3bc84;
@@ -564,11 +510,16 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  color: #7e8972;
+  color: var(--mi-muted);
   font-size: 10px;
 }
 .memoryTags strong {
   color: #9a783f;
+}
+.memoryTags > span {
+  padding: 3px 8px;
+  background: var(--mi-mint);
+  border-radius: 12px;
 }
 .memoryCard p {
   font-size: 14px;
@@ -589,7 +540,7 @@
 .memoryEditor small {
   font-size: 10px;
   line-height: 1.7;
-  color: #868a7e;
+  color: var(--mi-muted);
 }
 .memoryCard footer {
   display: grid;
@@ -600,7 +551,7 @@
   cursor: pointer;
 }
 .memoryCard details button {
-  color: #647953;
+  color: var(--mi-accent);
   font-size: 11px;
   min-height: 32px;
 }
@@ -617,7 +568,7 @@
   padding: 14px;
   border: 1px solid #aebc9b;
   border-radius: 14px;
-  background: #f8f8ef;
+  background: #ffffff;
 }
 .memoryEditor > label {
   display: grid;
@@ -631,10 +582,10 @@
 .memoryEditor select {
   width: 100%;
   padding: 9px;
-  background: #fffdf7;
-  border: 1px solid #ccd5bd;
-  border-radius: 8px;
-  color: #394a3d;
+  background: #ffffff;
+  border: 1px solid var(--mi-border);
+  border-radius: 16px;
+  color: var(--mi-ink);
   font-size: 16px;
 }
 .memoryEditor textarea {
@@ -682,33 +633,14 @@
   .heading h2 {
     font-size: 18px;
   }
-  .avatar {
-    width: 34px;
-    height: 34px;
-  }
   .iconButton {
     width: 32px;
   }
   .expand {
     display: grid;
   }
-  .notice {
-    margin: 0 18px;
-    padding-bottom: 10px;
-    font-size: 9px;
-  }
   .messages {
     padding: 14px 18px;
-  }
-  .empty {
-    min-height: 90px;
-    gap: 9px;
-  }
-  .empty svg {
-    display: none;
-  }
-  .empty p {
-    font-size: 19px;
   }
   .inputRow textarea {
     font-size: 16px;
@@ -721,5 +653,13 @@
 @media (prefers-reduced-motion: reduce) {
   .cursor {
     animation: none;
+  }
+}
+
+/* Short touch viewports need room for the composer before the scene. */
+@media (max-width: 900px) and (max-height: 550px) {
+  .panel,
+  .panel[data-expanded="true"] {
+    height: calc(var(--chat-vp-height, 100dvh) - 8px);
   }
 }

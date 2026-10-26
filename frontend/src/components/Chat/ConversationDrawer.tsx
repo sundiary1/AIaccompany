@@ -1,5 +1,6 @@
 import { ArrowLeft, Feather, Plus } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import { ConversationList } from "./ConversationList"
 import styles from "./chat.module.css"
 import type { Conversation } from "./conversation-api"
@@ -32,7 +33,7 @@ export function ConversationDrawer({
       }}
     >
       <header className={styles.historyHeader}>
-        <button
+        <IslandButton
           ref={close}
           className={styles.iconButton}
           type="button"
@@ -40,14 +41,15 @@ export function ConversationDrawer({
           onClick={onClose}
         >
           <ArrowLeft size={19} />
-        </button>
+        </IslandButton>
         <div>
           <h2>留在岛上的话</h2>
           <span>历史对话</span>
         </div>
       </header>
       <div className={styles.historyActions}>
-        <button
+        <IslandButton
+          variant="primary"
           type="button"
           disabled={chat.loading}
           onClick={async () => {
@@ -56,8 +58,8 @@ export function ConversationDrawer({
         >
           <Plus size={16} />
           新的对话
-        </button>
-        <button
+        </IslandButton>
+        <IslandButton
           type="button"
           disabled={chat.loading}
           onClick={async () => {
@@ -67,7 +69,7 @@ export function ConversationDrawer({
         >
           <Feather size={16} />
           临时聊天
-        </button>
+        </IslandButton>
       </div>
       <p className={styles.historyPrivacy}>
         历史保存在本机 Demo
@@ -76,12 +78,12 @@ export function ConversationDrawer({
       {chat.historyError && (
         <div className={styles.error} role="alert">
           <p>{chat.historyError}</p>
-          <button
+          <IslandButton
             type="button"
             onClick={() => void chat.refreshHistory().catch(() => {})}
           >
             重新载入历史
-          </button>
+          </IslandButton>
         </div>
       )}
       <div className={styles.historyScroll}>
@@ -96,14 +98,14 @@ export function ConversationDrawer({
           onDelete={setDeleting}
         />
         {chat.hasMore && (
-          <button
+          <IslandButton
             className={styles.loadMore}
             type="button"
             disabled={chat.loading}
             onClick={() => void chat.loadMore()}
           >
             查看更多对话
-          </button>
+          </IslandButton>
         )}
       </div>
       <div className={styles.historyFooter} role="status">

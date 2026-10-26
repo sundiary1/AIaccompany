@@ -1,31 +1,50 @@
-import { OrthographicCamera, useGLTF } from "@react-three/drei"
+import { Html, useGLTF } from "@react-three/drei"
 import { Canvas, type ThreeEvent, useFrame, useThree } from "@react-three/fiber"
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef } from "react"
+import { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import {
-  AgXToneMapping,
   Color,
   type Group,
   MathUtils,
   Mesh,
-  type MeshBasicMaterial,
-  Raycaster,
+  NeutralToneMapping,
   SRGBColorSpace,
-  type OrthographicCamera as ThreeOrthographicCamera,
   Vector3,
 } from "three"
+import { CloudBridge } from "./CloudBridge"
 import { CompanionCat, type CompanionCatState } from "./CompanionCat"
+import { applyIslandPalette } from "./island-look"
+import styles from "./island-preview.module.css"
 import { createIslandInstance, retainIslandResources } from "./island-resources"
+import {
+  COMPANION_SPAWN,
+  getCloudBridges,
+  getIslandDefinitions,
+  ISLANDS,
+  type IslandDefinition,
+  toWorldPoint,
+} from "./island-world"
+import {
+  type CameraGesture,
+  WorldCamera,
+  type ZoomRequest,
+} from "./WorldCamera"
 
-export const ISLAND_MODEL_URL = `${import.meta.env.BASE_URL}models/starter_jelly_island.glb`
-
-const TAU = Math.PI * 2
-const TILT = (0.75 * Math.PI) / 180
+export const WORLD_MODEL_URLS = ISLANDS.filter((island) => island.enabled).map(
+  (island) => `${import.meta.env.BASE_URL}${island.modelPath}`,
+)
+export const ISLAND_MODEL_URL = WORLD_MODEL_URLS[0]
 const HIGHLIGHT_COLOR = new Color("#d8e8c0")
+const TAU = Math.PI * 2
 
 type IslandSceneProps = {
+  compact: boolean
+  controlsEnabled: boolean
+  resetKey: number
+  zoomRequest: ZoomRequest
   playing: boolean
   onReady: () => void
   onSelect: () => void
+  onIslandSelect: (island: IslandDefinition) => void
   reducedMotion: boolean
   characterPlaying: boolean
   characterState: CompanionCatState
@@ -34,229 +53,268 @@ type IslandSceneProps = {
   onCharacterActionComplete: () => void
 }
 
-/** Fit the actual low-poly silhouette, including the trimmed island corners. */
-function modelCorners(model: Group) {
-  const corners: Vector3[] = []
-  model.updateMatrixWorld(true)
-  model.traverse((object) => {
-    if (!(object instanceof Mesh)) return
-    const positions = object.geometry.getAttribute("position")
-    for (let i = 0; i < positions.count; i++) {
-      corners.push(
-        new Vector3()
-          .fromBufferAttribute(positions, i)
-          .applyMatrix4(object.matrixWorld),
-      )
-    }
-  })
-  return corners
-}
+type Instance = ReturnType<typeof createIslandInstance>
 
-function FramedCamera({ corners }: { corners: Vector3[] }) {
-  const cameraRef = useRef<ThreeOrthographicCamera>(null)
-  const { size, invalidate } = useThree()
-
-  useLayoutEffect(() => {
-    const camera = cameraRef.current
-    if (!camera || !size.width || !size.height) return
-
-    // GLB is already Y-up: map the Blender preview camera, not the model.
-    camera.position.set(12.5, 10.5, 16)
-    camera.up.set(0, 1, 0)
-    camera.lookAt(0, 0.7, 0)
-    camera.updateMatrixWorld(true)
-
-    let minX = Infinity
-    let maxX = -Infinity
-    let minY = Infinity
-    let maxY = -Infinity
-    for (const corner of corners) {
-      const point = corner.clone().applyMatrix4(camera.matrixWorldInverse)
-      minX = Math.min(minX, point.x)
-      maxX = Math.max(maxX, point.x)
-      minY = Math.min(minY, point.y)
-      maxY = Math.max(maxY, point.y)
-    }
-
-    // Shift parallel to the image plane; the viewing angle remains fixed.
-    const shift = new Vector3(
-      (minX + maxX) / 2,
-      (minY + maxY) / 2,
-      0,
-    ).applyQuaternion(camera.quaternion)
-    camera.position.add(shift)
-    camera.updateMatrixWorld(true)
-
-    // Padding covers the complete float/scale/tilt envelope, including narrow screens.
-    const halfWidth = (maxX - minX) / 2 + 0.55
-    const halfHeight = (maxY - minY) / 2 + 0.55
-    const aspect = size.width / size.height
-    const frameHeight = Math.max(halfHeight, halfWidth / aspect) * 1.06
-    camera.left = -frameHeight * aspect
-    camera.right = frameHeight * aspect
-    camera.top = frameHeight
-    camera.bottom = -frameHeight
-    camera.updateProjectionMatrix()
-    invalidate()
-  }, [corners, invalidate, size.height, size.width])
-
-  return (
-    <OrthographicCamera
-      ref={cameraRef}
-      name="IslandPreviewCamera"
-      makeDefault
-      manual
-      near={0.1}
-      far={100}
-      zoom={1}
-    />
-  )
-}
-
-function IslandContent({
-  playing,
-  onReady,
-  onSelect,
+function IslandVisual({
+  definition,
+  instance,
   reducedMotion,
-  characterPlaying,
-  characterState,
-  characterActionKey,
-  onCharacterSelect,
-  onCharacterActionComplete,
-}: IslandSceneProps) {
-  const { scene } = useGLTF(ISLAND_MODEL_URL, false, false)
-  const instance = useMemo(() => createIslandInstance(scene), [scene])
-  const { model, shadowTexture, highlights } = instance
+  onSelect,
+}: {
+  definition: IslandDefinition
+  instance: Instance
+  reducedMotion: boolean
+  onSelect: () => void
+}) {
   const { gl, invalidate } = useThree()
-  const corners = useMemo(() => modelCorners(model), [model])
-  const catPosition = useMemo<[number, number, number]>(() => {
-    model.updateMatrixWorld(true)
-    const grass = model.getObjectByName("Grass_Top")
-    if (!grass) throw new Error("The island is missing its grass surface.")
-    const ray = new Raycaster(new Vector3(1.1, 10, 0.6), new Vector3(0, -1, 0))
-    const hit = ray.intersectObject(grass, true)[0]
-    if (!hit) throw new Error("Cannot place the companion on the grass.")
-    return [1.1, hit.point.y + 0.001, 0.6]
-  }, [model])
-  const islandRef = useRef<Group>(null)
-  const shadowRef = useRef<Mesh>(null)
-  const shadowMaterialRef = useRef<MeshBasicMaterial>(null)
-  const phase = useRef(0)
-  const hovered = useRef(false)
-  const highlight = useRef(0)
-
-  useEffect(() => onReady(), [onReady])
-  useEffect(
-    () =>
-      retainIslandResources(instance, () => useGLTF.clear(ISLAND_MODEL_URL)),
-    [instance],
-  )
+  const [hovered, setHovered] = useState(false)
+  const hover = useRef(false)
+  const strength = useRef(0)
+  const flash = useRef(0)
   useEffect(
     () => () => {
       gl.domElement.style.cursor = ""
     },
     [gl],
   )
-
-  const onPointerOver = (event: ThreeEvent<PointerEvent>) => {
-    if (event.pointerType === "touch") return
+  const enter = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation()
-    hovered.current = true
+    if (event.pointerType === "touch") return
+    hover.current = true
+    setHovered(true)
     gl.domElement.style.cursor = "pointer"
     invalidate()
   }
-  const onPointerOut = () => {
-    hovered.current = false
+  const leave = () => {
+    hover.current = false
+    setHovered(false)
     gl.domElement.style.cursor = ""
     invalidate()
   }
-
-  useFrame((_, delta) => {
-    // Preserve phase when paused/hidden; clamp the first frame after a long idle.
-    if (playing) phase.current += Math.min(delta, 0.05)
-    const targetHighlight = hovered.current ? 1 : 0
-    let nextHighlight = reducedMotion
-      ? targetHighlight
-      : MathUtils.damp(
-          highlight.current,
-          targetHighlight,
-          10,
-          Math.min(delta, 0.05),
-        )
-    if (Math.abs(nextHighlight - targetHighlight) < 0.001)
-      nextHighlight = targetHighlight
-    if (nextHighlight !== highlight.current) {
-      highlight.current = nextHighlight
-      for (const { material, baseEmissive } of highlights) {
-        material.emissive
-          .copy(baseEmissive)
-          .lerp(HIGHLIGHT_COLOR, nextHighlight * 0.04)
-      }
+  useFrame((_, frameDelta) => {
+    const delta = Math.min(frameDelta, 0.05)
+    flash.current = Math.max(0, flash.current - delta)
+    const target = flash.current > 0 ? 1.5 : hover.current ? 1 : 0
+    let next = reducedMotion
+      ? target
+      : MathUtils.damp(strength.current, target, 12, delta)
+    if (Math.abs(next - target) < 0.001) next = target
+    if (next !== strength.current) {
+      strength.current = next
+      for (const { material, baseEmissive } of instance.highlights)
+        material.emissive.copy(baseEmissive).lerp(HIGHLIGHT_COLOR, next * 0.045)
     }
-    if (nextHighlight !== targetHighlight) invalidate()
-    const t = phase.current
-    const float = Math.sin((TAU * t) / 5)
-    const breathe = 1 + 0.008 * Math.sin((TAU * t) / 6)
-    const island = islandRef.current
-    if (island) {
-      island.position.y = float * 0.12
-      island.scale.setScalar(breathe)
-      island.rotation.x = TILT * 0.75 * Math.sin((TAU * t) / 8)
-      island.rotation.z = TILT * Math.sin((TAU * t) / 7)
-    }
-    if (shadowRef.current) {
-      const spread = 1 + float * 0.035
-      shadowRef.current.scale.set(10.8 * spread, 10 * spread, 1)
-    }
-    if (shadowMaterialRef.current) {
-      shadowMaterialRef.current.opacity = 0.26 - float * 0.025
-    }
+    if (next !== target || flash.current > 0) invalidate()
   })
-
   return (
-    <>
-      <FramedCamera corners={corners} />
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: R3F group is a Three.js object; the HTML info button provides keyboard access. */}
-      <group
-        ref={islandRef}
-        name="Jelly_Island_Motion"
-        onPointerOver={onPointerOver}
-        onPointerOut={onPointerOut}
+    <group
+      name={`Island_${definition.id}`}
+      position={definition.position}
+      rotation={definition.rotation}
+      scale={definition.scale}
+      userData={{ islandId: definition.id }}
+    >
+      <primitive object={instance.model} dispose={null} />
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: R3F hit proxy; the same route is available as an HTML link. */}
+      <mesh
+        name={`Island_${definition.id}_HitArea`}
+        position={definition.hitArea.position}
+        onPointerOver={enter}
+        onPointerOut={leave}
         onClick={(event) => {
           event.stopPropagation()
-          if (event.delta <= 5) onSelect()
+          if (event.delta > 5) return
+          flash.current = reducedMotion ? 0 : 0.22
+          invalidate()
+          onSelect()
         }}
       >
-        <primitive object={model} dispose={null} />
-        <CompanionCat
-          position={catPosition}
-          playing={characterPlaying}
-          reducedMotion={reducedMotion}
-          state={characterState}
-          actionKey={characterActionKey}
-          onSelect={onCharacterSelect}
-          onActionComplete={onCharacterActionComplete}
-        />
-      </group>
-      <mesh
-        ref={shadowRef}
-        name="Island_Simulated_Shadow"
-        position={[0.15, -1.45, 0.15]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        scale={[10.8, 10, 1]}
-        renderOrder={-1}
-      >
-        <planeGeometry args={[1, 1]} />
+        <boxGeometry args={definition.hitArea.size} />
         <meshBasicMaterial
-          ref={shadowMaterialRef}
-          map={shadowTexture}
-          color="#655444"
           transparent
-          opacity={0.26}
+          opacity={0}
           depthWrite={false}
-          toneMapped={false}
+          colorWrite={false}
         />
       </mesh>
+      <Html
+        position={definition.labelPosition}
+        center
+        zIndexRange={[5, 0]}
+        style={{ pointerEvents: "none" }}
+      >
+        <div
+          className={styles.worldLabel}
+          data-island-label={definition.id}
+          data-active={hovered}
+        >
+          <span className={styles.worldLabelDot} />
+          <strong>{definition.name}</strong>
+          <span className={styles.worldLabelDescription}>
+            {definition.description}
+          </span>
+        </div>
+      </Html>
+    </group>
+  )
+}
+
+function IslandContent(props: IslandSceneProps) {
+  const gltfs = useGLTF(WORLD_MODEL_URLS, false, false)
+  const definitions = useMemo(
+    () => getIslandDefinitions(props.compact),
+    [props.compact],
+  )
+  const connections = useMemo(
+    () => getCloudBridges(props.compact),
+    [props.compact],
+  )
+  const instances = useMemo(
+    () =>
+      gltfs.map(({ scene }, index) => {
+        const instance = createIslandInstance(scene)
+        applyIslandPalette(
+          ISLANDS.filter((island) => island.enabled)[index].id,
+          instance.materials.values(),
+        )
+        // Picking uses one inexpensive proxy per island, never detailed grass or birds.
+        instance.model.traverse((object) => {
+          if (object instanceof Mesh) object.raycast = () => {}
+        })
+        return instance
+      }),
+    [gltfs],
+  )
+  const corners = useMemo(() => {
+    const points: Vector3[] = []
+    instances.forEach((instance, index) => {
+      instance.model.updateWorldMatrix(true, true)
+      const inverseRoot = instance.model.matrixWorld.clone().invert()
+      instance.model.traverse((object) => {
+        if (!(object instanceof Mesh)) return
+        object.geometry.computeBoundingBox()
+        const box = object.geometry.boundingBox
+        if (!box) return
+        for (const x of [box.min.x, box.max.x])
+          for (const y of [box.min.y, box.max.y])
+            for (const z of [box.min.z, box.max.z]) {
+              const p = new Vector3(x, y, z)
+                .applyMatrix4(object.matrixWorld)
+                .applyMatrix4(inverseRoot)
+              points.push(
+                new Vector3(
+                  ...toWorldPoint(definitions[index], [p.x, p.y, p.z]),
+                ),
+              )
+            }
+      })
+    })
+    // Include the companion and low HTML labels, not just the imported geometry.
+    const home = definitions.find(
+      (island) => island.id === COMPANION_SPAWN.islandId,
+    )!
+    points.push(new Vector3(...toWorldPoint(home, [1.5, 3.3, 2])))
+    for (const definition of definitions)
+      points.push(new Vector3(...toWorldPoint(definition, [0, -0.4, 4.8])))
+    return points
+  }, [definitions, instances])
+  const motion = useRef<Group>(null)
+  const gesture = useMemo<CameraGesture>(
+    () => ({ active: false, moved: false, blockedUntil: 0 }),
+    [],
+  )
+  const select = (callback: () => void) => {
+    if (
+      (gesture.active && gesture.moved) ||
+      performance.now() < gesture.blockedUntil
+    )
+      return
+    callback()
+  }
+  const time = useRef(0)
+  useEffect(() => props.onReady(), [props.onReady])
+  useEffect(() => {
+    const releases = instances.map((instance, index) =>
+      retainIslandResources(instance, () =>
+        useGLTF.clear(WORLD_MODEL_URLS[index]),
+      ),
+    )
+    return () => {
+      for (const release of releases) release()
+    }
+  }, [instances])
+  useFrame((_, delta) => {
+    if (props.playing) time.current += Math.min(delta, 0.05)
+    if (!motion.current) return
+    const t = props.reducedMotion ? 0 : time.current
+    // One transform for both islands, character and cloud bridge: docks cannot drift.
+    motion.current.position.y = Math.sin((TAU * t) / 5) * 0.12
+    motion.current.scale.setScalar(1 + Math.sin((TAU * t) / 6) * 0.008)
+    motion.current.rotation.x = Math.sin((TAU * t) / 8) * 0.004
+    motion.current.rotation.z = Math.sin((TAU * t) / 7) * 0.006
+  })
+  const home = definitions.find(
+    (island) => island.id === COMPANION_SPAWN.islandId,
+  )!
+  return (
+    <>
+      <WorldCamera
+        compact={props.compact}
+        corners={corners}
+        enabled={props.controlsEnabled}
+        reducedMotion={props.reducedMotion}
+        resetKey={props.resetKey}
+        zoomRequest={props.zoomRequest}
+        gesture={gesture}
+      />
+      <group ref={motion} name="Island_World_Motion">
+        {definitions.map((definition, index) => (
+          <IslandVisual
+            key={definition.id}
+            definition={definition}
+            instance={instances[index]}
+            reducedMotion={props.reducedMotion}
+            onSelect={() =>
+              select(() =>
+                definition.id === "home"
+                  ? props.onSelect()
+                  : props.onIslandSelect(definition),
+              )
+            }
+          />
+        ))}
+        <CloudBridge connections={connections} />
+        <CompanionCat
+          position={toWorldPoint(home, COMPANION_SPAWN.localPosition)}
+          playing={props.characterPlaying}
+          reducedMotion={props.reducedMotion}
+          state={props.characterState}
+          actionKey={props.characterActionKey}
+          onSelect={() => select(props.onCharacterSelect)}
+          onActionComplete={props.onCharacterActionComplete}
+        />
+      </group>
+      {definitions.map((island, index) => (
+        <mesh
+          key={island.id}
+          name={`Island_${island.id}_Shadow`}
+          position={[island.position[0], -0.9, island.position[2]]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          scale={[9.4, 8.8, 1]}
+          renderOrder={-1}
+          raycast={() => {}}
+        >
+          <planeGeometry args={[1, 1]} />
+          <meshBasicMaterial
+            map={instances[index].shadowTexture}
+            color="#65737a"
+            transparent
+            opacity={0.13}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </mesh>
+      ))}
     </>
   )
 }
@@ -264,32 +322,50 @@ function IslandContent({
 export function IslandScene(props: IslandSceneProps) {
   return (
     <Canvas
+      shadows="percentage"
       dpr={[1, 1.5]}
       frameloop={props.playing || props.characterPlaying ? "always" : "demand"}
-      gl={{ antialias: true, alpha: false, powerPreference: "low-power" }}
-      camera={{ position: [12.5, 10.5, 16] }}
+      gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
+      camera={{ position: [12.5, 12, 18] }}
       onCreated={({ gl }) => {
-        gl.toneMapping = AgXToneMapping
-        gl.toneMappingExposure = 1.3
+        gl.toneMapping = NeutralToneMapping
+        gl.toneMappingExposure = 1
         gl.outputColorSpace = SRGBColorSpace
+        gl.setClearColor("#ffffff", 0)
       }}
       fallback={
-        <div role="alert" style={{ padding: "3rem", textAlign: "center" }}>
-          当前设备暂时无法显示三维小岛，请使用支持 WebGL 的浏览器。
+        <div
+          role="alert"
+          style={{ padding: "3rem", textAlign: "center", background: "white" }}
+        >
+          当前设备暂时无法显示三维群岛，可继续使用下方的聊天与沙盘入口。
         </div>
       }
       role="img"
-      aria-label="可以点击的果冻岛和陪伴猫小屿；也可使用下方与小屿聊聊按钮打开聊天"
+      aria-label="可拖动旋转、缩放的群岛；点击小屿聊天，沙盒进入心理沙盘，书屋进入曼陀罗绘画，雨林进入正念，也可使用地图与下方按钮"
     >
-      <color attach="background" args={["#f6f2e9"]} />
-      <ambientLight intensity={0.9} color="#fff4df" />
-      <hemisphereLight args={["#fff8ed", "#bca88b", 0.7]} />
+      <ambientLight intensity={0.5} color="#ffffff" />
+      <hemisphereLight args={["#edf6ff", "#d0c1a9", 0.65]} />
       <directionalLight
-        position={[-5, 10, 6]}
-        intensity={3.2}
-        color="#fff1d8"
+        position={[-6, 12, 8]}
+        intensity={2.7}
+        color="#fff7ed"
+        castShadow
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-left={-24}
+        shadow-camera-right={24}
+        shadow-camera-top={20}
+        shadow-camera-bottom={-16}
+        shadow-camera-near={1}
+        shadow-camera-far={45}
+        shadow-normalBias={0.05}
+        shadow-bias={-0.002}
       />
-      <directionalLight position={[7, 6, -3]} intensity={1.1} color="#e7efff" />
+      <directionalLight
+        position={[7, 6, -3]}
+        intensity={0.65}
+        color="#e7efff"
+      />
       <Suspense fallback={null}>
         <IslandContent {...props} />
       </Suspense>

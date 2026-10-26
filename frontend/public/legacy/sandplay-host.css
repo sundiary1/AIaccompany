@@ -1,0 +1,84 @@
+@import url("../theme/animal-cursor.css");
+
+/* Embedding compatibility only; V15's model/camera/gesture code is unchanged. */
+.scene-head .smallcaps,
+.side-note,
+.asset-tip,
+.controls-hint {
+  display: none;
+}
+.host-theme-setting {
+  margin: 18px 0;
+}
+.host-theme-setting > p {
+  margin: 0 0 8px;
+  color: #506954;
+  font-size: 12px;
+}
+.settings .scene-tabs {
+  position: static;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+.settings .scene-tab {
+  flex: 1;
+  justify-content: center;
+  padding: 10px 12px;
+}
+.library {
+  height: 174px;
+}
+@media (max-height: 720px) {
+  .library {
+    height: 153px;
+  }
+}
+
+@media (max-height: 500px) and (min-width: 560px) {
+  #view {
+    /* Preserve aspect ratio and the original rect-based raycasting coordinates. */
+    transform: translateY(-88px) scale(0.88);
+    transform-origin: 50% 50%;
+  }
+  .view-modes {
+    flex-direction: row;
+    top: 54px;
+    right: 10px;
+    padding: 3px;
+    gap: 3px;
+    transform: none;
+    z-index: 9;
+  }
+  .view-modes button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px;
+    font-size: 11px;
+  }
+}
+@media (max-height: 320px) and (min-width: 560px) {
+  #view {
+    /* The work toolbar leaves less height on landscape phones. */
+    transform: translateY(-88px) scale(0.74);
+  }
+  .view-modes {
+    top: 6px;
+    right: 210px;
+  }
+  .scene-head {
+    display: none;
+  }
+  .scene-tabs {
+    top: 72px;
+    right: auto;
+  }
+}
+
+/* Product-wide white page background; the read-only V15 reference stays intact. */
+body,
+body[data-theme="sand"] {
+  background: #ffffff;
+}

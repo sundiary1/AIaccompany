@@ -83,9 +83,14 @@ def main():
         if args.staged
         else git("ls-files", "--cached", "--others", "--exclude-standard", "-z")
     )
+    deleted = (
+        set(git("ls-files", "--deleted", "-z").decode("utf-8").split("\0"))
+        if not args.staged
+        else set()
+    )
     errors, count, secrets = [], 0, local_secrets()
     for name in sorted(set(names.decode("utf-8").split("\0"))):
-        if not name:
+        if not name or name in deleted:
             continue
         path = Path(name)
         if forbidden(path):

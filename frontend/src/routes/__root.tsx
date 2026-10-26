@@ -10,26 +10,17 @@ import ErrorComponent from "@/components/Common/ErrorComponent"
 import NotFound from "@/components/Common/NotFound"
 
 function RootLayout() {
-  const isIslandPreview = useRouterState({
+  const isImmersivePage = useRouterState({
     select: (state) =>
-      state.location.pathname.replace(/\/$/, "") === "/island-preview",
+      ["/island-preview", "/sandplay", "/mandala", "/mindfulness"].includes(
+        state.location.pathname.replace(/\/$/, ""),
+      ),
   })
   return (
     <>
       <HeadContent />
-      {!isIslandPreview &&
-        import.meta.env.DEV &&
-        import.meta.env.VITE_DEMO_MODE === "true" && (
-          <aside
-            role="status"
-            className="border-b bg-muted px-4 py-2 text-center text-xs text-muted-foreground"
-          >
-            本地只读演示 · 虚构数据，保存及邮件功能不可用。演示登录：
-            <code>demo@example.com</code> / <code>mind-island-demo</code>
-          </aside>
-        )}
       <Outlet />
-      {!isIslandPreview && (
+      {!isImmersivePage && (
         <>
           <TanStackRouterDevtools position="bottom-right" />
           <ReactQueryDevtools initialIsOpen={false} />

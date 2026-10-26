@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import TypeVar
 
 from .memory_schema import SCHEMA_V2
+from .sandplay_schema import SCHEMA_V3
 
 T = TypeVar("T")
 DEFAULT_DATABASE_PATH = Path(__file__).parent / "data/mind_island_demo.sqlite3"
@@ -106,7 +107,7 @@ class Database:
                     connection.execute("PRAGMA journal_mode=WAL")
                     connection.execute("BEGIN IMMEDIATE")
                     version = connection.execute("PRAGMA user_version").fetchone()[0]
-                    if version > 2:
+                    if version > 3:
                         raise StorageError(
                             "schema_version", "历史数据库版本较新，请使用匹配的程序。"
                         )
@@ -118,6 +119,10 @@ class Database:
                         for statement in SCHEMA_V2:
                             connection.execute(statement)
                         connection.execute("PRAGMA user_version=2")
+                    if version < 3:
+                        for statement in SCHEMA_V3:
+                            connection.execute(statement)
+                        connection.execute("PRAGMA user_version=3")
                     # Uncertain in-flight LLM calls are NOT automatically repeated.
                     connection.execute(
                         "UPDATE memory_jobs SET status='failed',error_code='interrupted',finished_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE status='running'"

@@ -18,8 +18,10 @@ from .memory_worker import LLMExtractor, MemoryWorker, MockExtractor
 from .provider import ChatCompletionsProvider
 from .repositories.conversation_repository import ConversationRepository
 from .repositories.memory_repository import MemoryRepository
+from .repositories.sandplay_repository import SandplayRepository
 from .routes.conversations import router as conversation_router
 from .routes.memories import router as memory_router
+from .routes.sandplay import router as sandplay_router
 from .streaming import error_response
 
 ALLOWED_ORIGINS = {
@@ -114,6 +116,7 @@ def create_app(
     app.state.active_requests = 0
     app.state.repository = repository
     app.state.memories = memories
+    app.state.sandplay = SandplayRepository(repository.database)
     app.state.memory_mode = settings.mode
     app.state.memory_max_attempts = settings.memory_max_attempts
 
@@ -153,6 +156,7 @@ def create_app(
 
     app.include_router(conversation_router)
     app.include_router(memory_router)
+    app.include_router(sandplay_router)
     app.include_router(build_chat_router(settings, slots, recent, SYSTEM_PROMPT))
 
     return app

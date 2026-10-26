@@ -1,10 +1,24 @@
 # Mind Island · 心屿
 
-一座可以停下来聊天的小岛。当前版本 **Demo V0.5**，面向桌面与手机浏览器。
+一片可以停下来聊天和创作的群岛。当前本地版本 **V0.9.0（雨林正念岛待视觉与功能验收）**，面向桌面与手机浏览器。
 
 已包含动态果冻岛、原创陪伴猫“小屿”、真实流式 AI 对话、本机历史会话，以及默认关闭、用户授权后启用的自动长期记忆。小屿是 AI 陪伴角色，不是心理治疗师。
 
-![记忆信箱桌面预览](docs/screenshots/memory-v05-desktop.png)
+[沙屿多作品管理](docs/SANDPLAY_DEMO_V07.md)：从果冻岛进入 `/sandplay`，保留完整原版 80 种沙具，新增本机 SQLite 作品库、自动保存与主动导入浏览器旧存档，不发送给 AI。
+
+[双岛场景说明](docs/ISLAND_WORLD_V072.md)：用户提供的飞机岛与溪流小岛、三朵悬浮云、沙盘点击导航；页面统一白色背景，聊天区保留对话与必要操作。
+
+[Animal Island UI 接入记录](docs/UI_REFACTOR_ANIMAL.md)：实际使用圆润按钮、开关、输入框和卡片，保持白色背景与精简聊天。
+
+[群岛首页视觉实验](docs/FOREST_HOME_EXPERIMENT.md)：近白云雾森林、可拖动旋转和缩放的双岛视角，以及轻量群岛地图。
+
+[曼陀罗书屋](docs/MANDALA_DEMO_V080.md)：`/mandala` 提供 6 幅原创 SVG 涂色（小猫、鱼、星月、蝴蝶、拼花、小屋）和复用 MIT Mandala Maker 的对称绘画；用户提供的小木屋成为第三座功能岛。作品暂不存库，请导出 PNG 留存。
+
+[雨林正念岛](docs/RAINFOREST_MINDFULNESS_V090.md)：`/mindfulness` 提供可按压回弹的近景模型及独立音频播放器；首页四岛 T 字布局，三条云朵连接。正式音频待添加，清单位于 `frontend/src/components/Mindfulness/mindfulnessTracks.ts`。
+
+![群岛桌面预览](docs/screenshots/mindfulness-v090-world-desktop.png)
+
+真实 DeepSeek 记忆提取、跨会话注入与更新的验收及最小修复见 [V0.7.1 报告](docs/MEMORY_LIVE_VALIDATION_V071.md)。正式用户记忆未修改，自动记忆仍需主动授权。
 
 ## 本机启动
 
@@ -34,7 +48,7 @@ Set-Location backend
 bun run dev:demo
 ```
 
-打开 <http://127.0.0.1:5174/island-preview>，点击小屿或“与小屿聊聊”。只有前端运行时仍可预览 3D 场景，聊天需要本机代理。
+打开 <http://127.0.0.1:5174/island-preview>，点击小屿或“与小屿聊聊”。只有前端运行时仍可预览 3D 场景，聊天与 SQLite 作品库需要本机代理；原版沙盘和浏览器存档仍可独立使用。
 
 真实 AI 配置填写在 **`backend/demo_ai/.env.local`**：
 
@@ -59,6 +73,7 @@ AI_MODEL=填写模型名称
 ```text
 frontend/src/components/IslandPreview/  # 既有岛屿与角色
 frontend/src/components/Chat/           # 聊天、会话与记忆信箱
+frontend/src/components/Mandala/        # SVG 涂色、对称创作与 PNG 导出
 frontend/public/models/                # WebGL 运行资产
 backend/demo_ai/                       # 独立本机代理与 SQLite
 assets/blender/                        # 可编辑 Blender 工程、脚本和导出

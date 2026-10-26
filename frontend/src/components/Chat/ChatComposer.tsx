@@ -1,5 +1,6 @@
 import { ArrowUp, Square } from "lucide-react"
 import { useRef, useState } from "react"
+import { IslandButton } from "../IslandUI/IslandButton"
 import styles from "./chat.module.css"
 
 export function ChatComposer({
@@ -38,7 +39,7 @@ export function ChatComposer({
           value={text}
           maxLength={2000}
           rows={2}
-          placeholder="慢慢说，我在听…"
+          placeholder="说点什么…"
           enterKeyHint="send"
           onChange={(event) => setText(event.target.value)}
           onCompositionStart={() => {
@@ -61,28 +62,26 @@ export function ChatComposer({
           }}
         />
         {generating ? (
-          <button
+          <IslandButton
             className={styles.send}
+            variant="primary"
             type="button"
             onClick={onStop}
             aria-label="停止生成"
           >
             <Square size={15} fill="currentColor" />
-          </button>
+          </IslandButton>
         ) : (
-          <button
+          <IslandButton
             className={styles.send}
+            variant="primary"
             type="submit"
             disabled={disabled || !text.trim()}
             aria-label="发送消息"
           >
             <ArrowUp size={19} />
-          </button>
+          </IslandButton>
         )}
-      </div>
-      <div className={styles.inputHint}>
-        <span>Enter 发送 · Shift+Enter 换行</span>
-        <span>{text.length}/2000</span>
       </div>
     </form>
   )

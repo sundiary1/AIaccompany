@@ -1,4 +1,5 @@
 import {
+  BackSide,
   type BufferGeometry,
   CanvasTexture,
   type Color,
@@ -56,6 +57,8 @@ export function createIslandInstance(source: Group) {
     let cloned = materials.get(original)
     if (!cloned) {
       cloned = original.clone()
+      // Imported double-sided faces otherwise cast striped self-shadows.
+      cloned.shadowSide = BackSide
       materials.set(original, cloned)
       if (cloned instanceof MeshStandardMaterial) {
         highlights.push({
@@ -68,6 +71,8 @@ export function createIslandInstance(source: Group) {
   }
   model.traverse((object) => {
     if (!(object instanceof Mesh)) return
+    object.castShadow = true
+    object.receiveShadow = true
     object.material = Array.isArray(object.material)
       ? object.material.map(cloneMaterial)
       : cloneMaterial(object.material)

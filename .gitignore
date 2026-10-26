@@ -37,3 +37,6 @@ backend/demo_ai/data/
 *.blend[0-9]
 *.log
 frontend/dist/
+
+# Supplied original retained locally; editable compressed copy is versioned.
+assets/blender/islands/mandala/source/mandala_house.blend

@@ -52,6 +52,30 @@ class Fact:
     explicit: bool = False
 
 
+def stated_name(value: str) -> str | None:
+    """Bounded user-supplied name, not an inferred identity or an instruction."""
+    value = value.strip()
+    for opening, closing in [("“", "”"), ("‘", "’"), ('"', '"'), ("'", "'")]:
+        if value.startswith(opening) and value.endswith(closing):
+            value = value[1:-1].strip()
+            break
+    if not (
+        re.fullmatch(r"[\u3400-\u9fff]{1,8}(?:·[\u3400-\u9fff]{1,8})?", value)
+        or re.fullmatch(r"[A-Za-z](?:[A-Za-z .'-]{0,38}[A-Za-z])?", value)
+    ):
+        return None
+    if re.match(
+        r"了|着|过|你|他|她|它|大家|朋友|同事|老师|同学|自己|我的|不要|什么|怎么|谁|帮你",
+        value,
+    ):
+        return None
+    if re.search(
+        r"过来|帮忙|吃饭|起床|回来|回家|出门|打电话|来找|去找|做事|一下|一声", value
+    ):
+        return None
+    return " ".join(value.split())
+
+
 def derive(evidence: str) -> Fact | None:
     text = evidence.strip(" 。！!；;\n")
     if re.search(r"[？?]|(?:吗|么)$", text):
@@ -61,8 +85,27 @@ def derive(evidence: str) -> Fact | None:
         re.search(r"现在|不再|已经|更正|改为|改成|不是|考完|参加完|完成", text)
     )
     first = re.split(r"[，,。；;！!]", text)[0]
+    identity = re.fullmatch(
+        r"(?:我(?:现在)?叫|我的?(?:名字|姓名)(?:是|叫)|My name is)\s*(.+)", first, re.I
+    )
+    if identity and (name := stated_name(identity[1])):
+        return Fact(
+            "用户的名字是" + name, "fact", "fact:姓名", normalize(name), explicit
+        )
+    address = re.fullmatch(
+        r"(?:你可以叫我|以后(?:你)?(?:可以)?叫我|请叫我|叫我)\s*(.+?)(?:就好|就行)?",
+        first,
+    )
+    if address and (name := stated_name(address[1])):
+        return Fact(
+            "用户希望被称为" + name,
+            "communication",
+            "communication:称呼",
+            normalize(name),
+            True,
+        )
     pref = re.fullmatch(
-        r"我(?:其实|比较|非常|特别|一直|真的|现在|最|更|也)?(不再喜欢|不喜欢|喜欢|讨厌|偏好|更喜欢)(.{1,50})",
+        r"我(?:其实|比较|非常|特别|一直|真的|现在|最|更|也|很)?(不再喜欢|不喜欢|喜欢|讨厌|偏好|更喜欢)(.{1,50})",
         first,
     )
     if pref:
@@ -111,10 +154,13 @@ def derive(evidence: str) -> Fact | None:
         return Fact(
             f"用户{frequency}{activity}", "habit", "habit:" + normalize(activity)
         )
-    communication = re.fullmatch(r"我希望(?:你|小屿)(.{2,65})", first)
+    communication = re.fullmatch(r"我希望(?:你|小屿|聊天的时候|聊天时)(.{2,65})", first)
     if communication:
         preference = communication[1]
-        if any(
+        question_pace = "追问" in preference or bool(
+            re.search(r"(?:不要|别|避免).{0,4}连续(?:问|提问)", preference)
+        )
+        if question_pace or any(
             word in preference
             for word in [
                 "简短",
@@ -129,7 +175,7 @@ def derive(evidence: str) -> Fact | None:
         ):
             topic = (
                 "提问节奏"
-                if "追问" in preference
+                if question_pace
                 else "语言"
                 if "文" in preference
                 else "回复长度"
@@ -162,27 +208,81 @@ def derive(evidence: str) -> Fact | None:
     return None
 
 
+def source_facts(text: str) -> list[tuple[str, Fact]]:
+    """Literal clauses only; narrowly inherit 'I' across an adjacent comma.
+
+    No inheritance across sentences, unknown clauses, quotes or third parties.
+    Evidence stays verbatim; the supported implicit form is just 平时也喜欢….
+    """
+    result = []
+    inherited = False
+    for part in re.split(r"([。！!；;，,\n])", text):
+        if part in {"，", ","}:
+            continue
+        if part in {"。", "！", "!", "？", "?", "；", ";", "\n"}:
+            inherited = False
+            continue
+        evidence = part.strip()
+        if not evidence:
+            continue
+        fact = derive(evidence)
+        if not fact and inherited:
+            implicit = re.fullmatch(r"(?:平时|平常)也喜欢(.{1,40})", evidence)
+            if implicit:
+                fact = derive("我喜欢" + implicit[1])
+        if fact:
+            result.append((evidence, fact))
+        inherited = bool(fact and fact.category == "preference")
+    return result
+
+
+def previous_preference(text: str, fact: Fact) -> Fact | None:
+    """An explicit old -> new statement, independent of model target/confidence."""
+    change = re.fullmatch(
+        r"我现在更喜欢(.{1,30})了[，,]之前喜欢(.{1,30})[，,]但最近改变了想法[。！!]?",
+        text.strip(),
+    )
+    if not change or not eligible_source(text) or fact.category != "preference":
+        return None
+    current, previous = derive("我喜欢" + change[1]), derive("我喜欢" + change[2])
+    if (
+        current
+        and previous
+        and normalize(current.content) == normalize(fact.content)
+        and current.topic != previous.topic
+    ):
+        return previous
+    return None
+
+
 def validate_candidate(candidate, source: dict, api_key="") -> Fact | None:
     if str(candidate.source_message_id) != source["id"] or not eligible_source(
         source["content"], api_key
     ):
         return None
-    clauses = {
-        part.strip(" 。！!？?；;，,\n")
-        for part in re.split(r"[。！!？?；;，,\n]", source["content"])
-    }
+    clauses = dict(source_facts(source["content"]))
     # A substring inside a quote or third-party attribution is not evidence.
     if candidate.evidence.strip(" 。！!；;，,\n") not in clauses or not eligible_source(
         candidate.content, api_key
     ):
         return None
-    fact = derive(candidate.evidence)
+    fact = clauses.get(candidate.evidence.strip(" 。！!；;，,\n"))
+    # Some providers label the same explicitly habitual liking as "habit".
+    # Canonicalize only this supported literal form; never trust model prose.
+    category_matches = fact and (
+        candidate.category == fact.category
+        or (
+            fact.topic in {"fact:姓名", "communication:称呼"}
+            and candidate.category in {"fact", "communication"}
+        )
+        or (
+            fact.category == "preference"
+            and candidate.category == "habit"
+            and re.fullmatch(r"(?:平时|平常)也喜欢.{1,40}", candidate.evidence)
+        )
+    )
     # The stored wording is server-derived from the literal evidence, not the LLM's prose.
-    if (
-        not fact
-        or candidate.category != fact.category
-        or TRANSIENT.search(fact.content)
-    ):
+    if not fact or not category_matches or TRANSIENT.search(fact.content):
         return None
     if len(fact.content) > 180:
         return None
@@ -191,11 +291,24 @@ def validate_candidate(candidate, source: dict, api_key="") -> Fact | None:
 
 def lexical_score(query: str, content: str, category: str) -> int:
     q, c = normalize(query), normalize(content)
+    if category == "fact" and content.startswith("用户的名字是"):
+        # Identity must survive questions such as “我是谁”, with no name overlap.
+        return 4 if re.search(r"名字|姓名|叫什么|叫啥|称呼|昵称|我是谁", query) else 1
     if category == "communication":
         return 2
     if re.search(r"记得|偏好|了解我|我的目标|remember", query, re.I):
         return 1
-    return 3 * len(
+    score = 3 * len(
         {q[i : i + 2] for i in range(len(q) - 1)}
         & {c[i : i + 2] for i in range(len(c) - 1)}
     )
+    # Small explicit activity vocabulary, rather than returning every preference
+    # for a query with zero overlap. No psychological or sensitive inference.
+    if category in {"preference", "habit", "interest"} and re.search(
+        r"周末|出去|出门|走走|散步|户外|公园|出游", query
+    ):
+        if re.search(r"公园|散步|户外|徒步|步行|远足", content):
+            score = max(score, 3)
+        elif re.search(r"晴天|下雨天|雨天", content):
+            score = max(score, 1)
+    return score

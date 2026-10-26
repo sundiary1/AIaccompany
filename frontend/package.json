@@ -13,7 +13,11 @@
     "test": "bunx playwright test",
     "test:ui": "bunx playwright test --ui",
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true ./",
-    "check:demo": "biome check src/components/Chat src/components/IslandPreview src/dev src/routes/island-preview.tsx src/main.tsx src/routes/__root.tsx src/vite-env.d.ts vite.config.ts"
+    "check:demo": "biome check src/components/Chat src/components/IslandPreview src/components/Mandala src/components/Mindfulness src/components/IslandUI src/components/Sandplay src/dev src/routes/island-preview.tsx src/routes/sandplay.tsx src/routes/mandala.tsx src/routes/mindfulness.tsx src/main.tsx src/routes/__root.tsx src/vite-env.d.ts vite.config.ts public/legacy/sandplay-host.js public/legacy/sandplay-bridge.js public/legacy/sandplay-host.css",
+    "test:sandplay": "node --test tests/sandplay-bridge.test.mjs",
+    "test:islands": "bun test tests/island-world.test.mjs",
+    "test:mandala": "bun test tests/mandala.test.mjs",
+    "test:mindfulness": "bun test tests/mindfulness.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -37,8 +41,10 @@
     "@tanstack/react-router": "^1.170.39",
     "@tanstack/react-router-devtools": "^1.167.2",
     "@tanstack/react-table": "^9.2.4",
+    "animal-island-ui": "2.3.0",
     "axios": "1.20.0",
     "class-variance-authority": "^0.7.1",
+    "classnames": "2.5.1",
     "clsx": "^2.1.1",
     "form-data": "4.0.6",
     "lucide-react": "^1.48.0",

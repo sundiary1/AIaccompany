@@ -1,0 +1,99 @@
+/* Animal Island UI 2.3.0, adapted for Mind Island's white, quiet interface. */
+:root {
+  --mi-font:
+    "Nunito", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --mi-ink: #65523c;
+  --mi-heading: #5b4830;
+  --mi-muted: #85765f;
+  --mi-accent: #297563;
+  --mi-mint: #e8f4ed;
+  --mi-line: #e8e1d4;
+  --mi-border: #d3c8b5;
+  --mi-focus: #e6b739;
+  --mi-shadow: 0 8px 28px #67583c12;
+  --mi-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --animal-font-family: var(--mi-font);
+  --animal-text-color: var(--mi-heading);
+  --animal-text-color-secondary: var(--mi-muted);
+  --animal-primary-color: var(--mi-accent);
+  --animal-primary-color-hover: #35816f;
+  --animal-primary-color-active: #205f50;
+  --animal-primary-color-bg: var(--mi-mint);
+  --animal-bg-color: #ffffff;
+  --animal-bg-color-secondary: #f4f7f1;
+  --animal-border-color: var(--mi-border);
+  --animal-border-color-light: var(--mi-line);
+  --animal-border-color-hover: #a49a84;
+  --animal-error-color: #a74f42;
+  --animal-error-color-active: #863c32;
+  --animal-focus-yellow: var(--mi-focus);
+}
+
+button:where([data-island-button]) > span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+button[data-island-button][data-variant="primary"] {
+  background: #eff5e7;
+  border-color: #eff5e7;
+  color: #426449;
+  box-shadow: 0 4px 0 #b6c5a5;
+}
+
+button[data-island-button][data-variant="primary"]:hover:not(:disabled) {
+  background: #e8f1dc;
+  border-color: #e8f1dc;
+  box-shadow: 0 5px 0 #b6c5a5;
+}
+
+button[data-island-button][data-variant="primary"]:active:not(:disabled) {
+  box-shadow: 0 1px 0 #b6c5a5;
+}
+
+button[data-island-button][data-variant="primary"]:disabled {
+  box-shadow: none;
+}
+
+button[data-island-button][data-variant="primary"][data-danger="true"] {
+  background: #a74f42;
+  color: #ffffff;
+  border-color: #a74f42;
+  box-shadow: 0 4px 0 #863c32;
+}
+
+button[data-island-button][data-variant="primary"][data-danger="true"]:hover:not(
+  :disabled
+) {
+  background: #b45d4f;
+  border-color: #b45d4f;
+  box-shadow: 0 5px 0 #863c32;
+}
+
+button[data-island-button][data-variant="primary"][data-danger="true"]:active:not(
+  :disabled
+) {
+  background: #974538;
+  border-color: #974538;
+  box-shadow: 0 1px 0 #863c32;
+}
+
+button[data-island-button][data-variant="primary"][data-danger="true"]:disabled {
+  box-shadow: none;
+}
+
+/* Upstream motion and hover lift also obey the product's accessibility setting. */
+@media (prefers-reduced-motion: reduce) {
+  :root :is(button, span, div)[class*="animal-"] {
+    transition: none;
+    animation: none;
+  }
+  :root button[data-island-button]:hover,
+  :root button[data-island-button]:active {
+    transform: none;
+  }
+}

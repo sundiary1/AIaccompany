@@ -11,7 +11,7 @@ class Candidate(BaseModel):
     content: str = Field(min_length=1, max_length=240)
     category: Category
     source_message_id: UUID
-    evidence: str = Field(min_length=4, max_length=180)
+    evidence: str = Field(min_length=3, max_length=180)
     action: Literal["add", "update"] = "add"
     target_id: UUID | None = None
 

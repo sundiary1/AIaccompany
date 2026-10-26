@@ -60,4 +60,8 @@ jobs:
           bun-version: "1.4.4"
       - run: bun install --frozen-lockfile
       - run: bun run --filter frontend check:demo
+      - run: bun run --filter frontend test:sandplay
+      - run: bun run --filter frontend test:islands
+      - run: bun run --filter frontend test:mandala
+      - run: bun run --filter frontend test:mindfulness
       - run: bun run --filter frontend build

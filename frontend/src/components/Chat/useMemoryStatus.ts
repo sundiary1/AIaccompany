@@ -40,8 +40,9 @@ export function useMemoryStatus(active: boolean, generating: boolean) {
         automatic = Boolean(nextSettings.auto_extract)
         const change = nextStatus.jobs.find(
           (job) =>
-            job.status === "completed" &&
-            (job.added_count || job.updated_count || job.review_count),
+            job.status === "failed" ||
+            (job.status === "completed" &&
+              (job.added_count || job.updated_count || job.review_count)),
         )
         if (change?.finished_at) {
           if (
@@ -49,7 +50,11 @@ export function useMemoryStatus(active: boolean, generating: boolean) {
             Date.parse(change.finished_at) > Date.parse(lastSeen.current)
           )
             setNotice(
-              change.review_count ? "有一件事需要你核对" : "小屿记住了一件事",
+              change.status === "failed"
+                ? "这次记忆整理未成功，可到记忆信箱查看。"
+                : change.review_count
+                  ? "有一件事需要你核对"
+                  : "小屿记住了一件事",
             )
           lastSeen.current = change.finished_at
         } else if (!lastSeen.current)
