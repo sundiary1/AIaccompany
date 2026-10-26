@@ -1,9 +1,10 @@
-import { Link } from "@tanstack/react-router"
-import { Title, Tooltip } from "animal-island-ui"
-import { ArrowLeft, Hand, RotateCcw, Trees } from "lucide-react"
+import { Tooltip } from "animal-island-ui"
+import { Hand } from "lucide-react"
 import { lazy, Suspense, useCallback, useState } from "react"
 import { ErrorBoundary } from "react-error-boundary"
 import { IslandButton } from "../IslandUI/IslandButton"
+import { RefreshIcon, TreeIcon } from "../IslandUI/island-icons"
+import { PageHeader } from "../IslandUI/PageHeader"
 import { MindfulnessPlayer } from "./MindfulnessPlayer"
 import styles from "./mindfulness.module.css"
 import { mindfulnessTracks } from "./mindfulnessTracks"
@@ -21,7 +22,7 @@ function SceneFallback({ retry }: { retry: () => void }) {
       />
       <p>三维显示暂不可用，音频仍可正常使用。</p>
       <IslandButton onClick={retry}>
-        <RotateCcw size={15} />
+        <RefreshIcon size={15} />
         重试三维显示
       </IslandButton>
     </div>
@@ -39,23 +40,12 @@ export function RainforestPage() {
       data-testid="mindfulness-page"
       data-reduced-motion={environment.reducedMotion}
     >
-      <header className={styles.header}>
-        <Link to="/island-preview" preload={false} className={styles.back}>
-          <ArrowLeft size={18} />
-          返回群岛
-        </Link>
-        <span className={styles.brand}>
-          <Trees size={21} />
-          雨林岛
-        </span>
-      </header>
+      <PageHeader
+        title="雨林 · 正念"
+        shortTitle="正念"
+        icon={<TreeIcon size={19} />}
+      />
       <main className={styles.main}>
-        <div className={styles.heading}>
-          <Title size="large" variant="layer" color="app-teal">
-            正念
-          </Title>
-          <p>听见自然，也听见此刻。</p>
-        </div>
         <div className={styles.layout}>
           <section className={styles.sceneSection} aria-label="互动雨林">
             <div

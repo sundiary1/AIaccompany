@@ -14,19 +14,7 @@
     height: 100dvh;
   }
 }
-.header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  min-height: 64px;
-  padding: calc(8px + env(safe-area-inset-top))
-    max(14px, env(safe-area-inset-right)) 8px
-    max(14px, env(safe-area-inset-left));
-  border-bottom: 1px solid var(--mi-line);
-  background: #ffffff;
-}
-.back,
-.settings,
+
 .retry {
   display: inline-flex;
   justify-content: center;
@@ -38,22 +26,12 @@
   font-size: 12px;
   text-decoration: none;
 }
-.back:focus-visible,
-.settings:focus-visible,
 .retry:focus-visible {
   outline: 2px solid #718d62;
   outline-offset: -2px;
   border-radius: 8px;
 }
-.title {
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-  margin: 0;
-}
-.settings {
-  display: none;
-}
+
 .projectTitle {
   max-width: 180px;
   min-width: 0;
@@ -105,43 +83,11 @@
   background: #ffffff;
 }
 @media (max-width: 650px) {
-  .header {
-    gap: 12px;
-  }
-  .title {
-    display: none;
-  }
   .projectTitle {
     display: none;
   }
-  .settings {
-    display: inline-flex;
-    min-width: 40px;
-    padding: 0;
-  }
-  .settingsLabel {
-    display: none;
-  }
-  .back {
-    min-width: 40px;
-  }
 }
-@media (max-height: 500px) {
-  .title {
-    display: none;
-  }
-  .back,
-  .settings {
-    min-height: 44px;
-  }
-}
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: auto;
-}
-.toolButton,
+
 .libraryActions button,
 .dialogActions button {
   display: inline-flex;
@@ -157,7 +103,6 @@
   font-size: 12px;
   white-space: nowrap;
 }
-.toolButton:disabled,
 .library button:disabled,
 .dialog button:disabled {
   opacity: 0.5;
@@ -286,7 +231,6 @@ button.toolButton.primary,
   border-radius: 16px;
 }
 .library button:focus-visible,
-.actions button:focus-visible,
 .dialog button:focus-visible,
 .dialog input:focus-visible {
   outline: 2px solid #718d62;
@@ -383,23 +327,6 @@ button.toolButton.primary,
   border-color: #9a6049;
 }
 @media (max-width: 650px) {
-  .header {
-    gap: 8px;
-    padding-right: max(10px, env(safe-area-inset-right));
-    padding-left: max(10px, env(safe-area-inset-left));
-  }
-  .actions {
-    gap: 6px;
-  }
-  .toolButton {
-    min-width: 44px;
-    min-height: 44px;
-    font-size: 11px;
-    padding: 0 8px;
-  }
-  .toolButton svg {
-    display: none;
-  }
   .library {
     bottom: max(12px, env(safe-area-inset-bottom));
     padding: 16px;
@@ -407,9 +334,6 @@ button.toolButton.primary,
   }
 }
 @media (max-height: 500px) {
-  .toolButton {
-    min-height: 34px;
-  }
   .library {
     top: 50px;
     bottom: 8px;

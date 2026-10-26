@@ -55,24 +55,16 @@
 .atmosphere[data-moving="false"] .nearMist {
   animation-play-state: paused;
 }
-.headerActions,
 .sceneTools {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.headerActions {
-  position: relative;
-  z-index: 12;
-}
+
 [data-map-open="true"] .headerActions [role="tooltip"] {
   visibility: hidden;
 }
-.mapButton {
-  font-size: 12px;
-  color: var(--mi-accent);
-  padding: 0 14px;
-}
+
 .sceneTools {
   position: absolute;
   bottom: 12px;
@@ -224,20 +216,13 @@
   }
 }
 @media (max-width: 640px) {
-  .navLabel,
   .desktopHint {
     display: none;
   }
   .touchHint {
     display: inline;
   }
-  .mapButton {
-    width: 40px;
-    padding: 0;
-  }
-  .headerActions {
-    gap: 2px;
-  }
+
   .sceneTools {
     right: 8px;
     bottom: 8px;

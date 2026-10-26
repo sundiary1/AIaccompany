@@ -8,6 +8,7 @@
 
 - V0.9.0：首页第四岛为用户海滩小车模型，位于心屿后方，桌面 T 字、手机纵列侧枝，三条连接各三朵云。`/mindfulness` 使用独立 Island 模型、部件弹簧和独立 HTMLAudio 播放器；无正式音频时不请求空文件。音轨清单在 `frontend/src/components/Mindfulness/mindfulnessTracks.ts`，资源放 `frontend/public/audio/mindfulness/`。后台停帧、减少动态、静态降级和离页清理已验证；10 项新单测、13 项既有前端、98 项后端 Mock、7 项脚本测试及构建/规范检查通过，未调用真实 AI。详见 `docs/RAINFOREST_MINDFULNESS_V090.md`，实体 iOS/Android 音频仍待实机验收。
 - 正念电脑端后续改为一屏自适应高度，常见 600–1000px 窗口高度无页面滚动且控件完整；手机保持纵向。雨林克隆材质提亮，水面增加静态低分辨率环境高光，捕获组件 memo 避免随音频进度重复计算；源 GLB 未改。全局演示黑条已移除。
+- 统一导航实验在 `codex/unified-navigation-v1`：共享 PageHeader、Animal Island 按钮/弹窗和配套 naive-icons 1.7.0，桌面 72px / 手机 56px；书屋工具移到导航下方，正念合并标题，沙盒手机次要操作收入更多。原版已提交 `9466f5b` 并上传标签 `v0.9.0-before-unified-navigation`，main 保持原版。见 `docs/UNIFIED_NAVIGATION_V1.md`，等待用户视觉验收。
 
 - `/island-preview`：用户提供的飞机岛替换可见心屿，溪流小岛作为沙屿；三朵悬浮云、角色与双岛共用运动父级。旧果冻岛与角色 GLB 未改，正交相机适配桌面与手机竖屏。
 - V0.8.0 追加用户小木屋作为第三岛，复用现有 Canvas / 运动 / 相机和配置。桌面书屋—心屿—沙屿对齐，手机采用纵向布局，两条连接各三朵云。`/mandala` 有 6 幅原创封闭 SVG（动物、自然与几何题材，不显示难度；原九幅径向图案已移除）、MIT Mandala Maker 适配的 6/8/12/16 轴画笔、撤销/重做、缩放和 2048px PNG；只在内存编辑，不入库或发给 AI。详见 `docs/MANDALA_DEMO_V080.md`。

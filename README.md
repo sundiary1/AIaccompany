@@ -16,7 +16,9 @@
 
 [雨林正念岛](docs/RAINFOREST_MINDFULNESS_V090.md)：`/mindfulness` 提供可按压回弹的近景模型及独立音频播放器；首页四岛 T 字布局，三条云朵连接。正式音频待添加，清单位于 `frontend/src/components/Mindfulness/mindfulnessTracks.ts`。
 
-![群岛桌面预览](docs/screenshots/mindfulness-v090-world-desktop.png)
+[统一导航 V1 视觉实验](docs/UNIFIED_NAVIGATION_V1.md)：四个产品页复用 Animal Island UI 导航与配套手绘图标。原版保留在 `v0.9.0-before-unified-navigation` 标签，实验独立于 main。
+
+![群岛桌面预览](docs/screenshots/navigation-v1-world-desktop.png)
 
 真实 DeepSeek 记忆提取、跨会话注入与更新的验收及最小修复见 [V0.7.1 报告](docs/MEMORY_LIVE_VALIDATION_V071.md)。正式用户记忆未修改，自动记忆仍需主动授权。
 

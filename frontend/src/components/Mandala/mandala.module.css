@@ -10,56 +10,7 @@
   flex-direction: column;
   overflow: hidden;
 }
-.header {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  min-height: 88px;
-  padding: 18px 36px;
-  border-bottom: 1px solid var(--mi-line);
-  flex-shrink: 0;
-}
-.back {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--mi-muted);
-  text-decoration: none;
-  white-space: nowrap;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--mi-heading);
-  white-space: nowrap;
-}
-.brand svg {
-  color: var(--mi-accent);
-}
-.headerNote {
-  margin-left: auto;
-  font-size: 12px;
-  color: var(--mi-muted);
-}
-.nameInput {
-  max-width: 230px;
-  margin-left: auto;
-}
-.headerTools {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.headerTools button {
-  padding: 10px 13px;
-  min-height: 42px;
-}
-.headerTools .exportButton {
-  margin-left: 8px;
-  padding: 10px 18px;
-}
+
 .welcome {
   max-width: 1120px;
   margin: 0 auto;
@@ -78,7 +29,7 @@
   letter-spacing: 0.17em;
   margin-bottom: 24px;
 }
-.welcome h1 {
+.welcome h2 {
   font-size: clamp(28px, 3vw, 43px);
   line-height: 1.7;
   font-weight: 800;
@@ -154,26 +105,12 @@
 .modeCard > span:last-child {
   justify-self: end;
 }
-.editorInfo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 36px;
-  min-height: 54px;
-  flex-shrink: 0;
-}
-.editorInfo > span[role="status"] {
-  font-size: 11px;
-  color: var(--mi-muted);
-  margin-left: auto;
-}
+
 .modeBack {
   padding: 6px 12px;
   font-size: 11px;
 }
-.settingsButton {
-  display: none;
-}
+
 .editor {
   display: grid;
   grid-template-columns: 232px minmax(0, 1fr) 208px;
@@ -428,13 +365,6 @@
   outline-offset: 3px;
 }
 @media (max-width: 1050px) {
-  .header {
-    padding: 16px 20px;
-    gap: 16px;
-  }
-  .brand {
-    font-size: 14px;
-  }
   .editor {
     grid-template-columns: 180px minmax(0, 1fr) 168px;
     padding: 0 16px 12px;
@@ -454,44 +384,6 @@
   }
 }
 @media (max-width: 760px) {
-  .header {
-    min-height: 68px;
-    padding: 14px 18px;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .brand {
-    margin-left: auto;
-  }
-  .page[data-editing="true"] .brand {
-    display: none;
-  }
-  .page[data-editing="true"] .header {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 10px 18px;
-  }
-  .back {
-    font-size: 11px;
-  }
-  .nameInput {
-    margin-left: 0;
-    max-width: none;
-  }
-  .headerTools {
-    grid-column: 1 / -1;
-    justify-content: flex-end;
-  }
-  .headerTools button {
-    min-height: 36px;
-    padding: 7px 12px;
-  }
-  .headerTools > span:first-child {
-    margin-right: auto;
-  }
-  .headerNote {
-    display: none;
-  }
   .welcome {
     display: flex;
     flex-direction: column;
@@ -501,7 +393,7 @@
   .welcomeIntro {
     align-self: stretch;
   }
-  .welcome h1 {
+  .welcome h2 {
     font-size: 27px;
     line-height: 1.65;
     margin-bottom: 12px;
@@ -529,23 +421,7 @@
   .modeCard > p {
     font-size: 12px;
   }
-  .editorInfo {
-    padding: 8px 16px;
-    gap: 8px;
-    min-height: 44px;
-    flex-wrap: wrap;
-  }
-  .editorInfo > span[role="status"] {
-    order: 4;
-    flex-basis: 100%;
-    font-size: 9px;
-  }
-  .settingsButton {
-    display: inline-flex;
-    padding: 6px 12px;
-    margin-left: auto;
-    font-size: 11px;
-  }
+
   .editor {
     display: flex;
     flex-direction: column;
@@ -623,26 +499,6 @@
   }
 }
 @media (max-width: 960px) and (max-height: 540px) and (orientation: landscape) {
-  .page[data-editing="true"] .header {
-    display: flex;
-    min-height: 56px;
-    padding: 8px 16px;
-    flex-wrap: nowrap;
-  }
-  .headerTools {
-    margin-left: auto;
-  }
-  .nameInput {
-    max-width: 160px;
-  }
-  .editorInfo {
-    padding: 4px 16px;
-    min-height: 36px;
-    flex-wrap: nowrap;
-  }
-  .editorInfo > span[role="status"] {
-    display: none;
-  }
   .editor {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 180px;
@@ -650,10 +506,7 @@
   .settingsPanel {
     display: none;
   }
-  .settingsButton {
-    display: inline-flex;
-    margin-left: auto;
-  }
+
   .toolPanel {
     height: 100%;
     overflow-y: auto;
@@ -679,5 +532,108 @@
   }
   .editorFooter {
     padding: 0 16px 4px;
+  }
+}
+
+/* Editor controls share one toolbar below the common product navigation. */
+.editorInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 32px;
+  min-height: 60px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--mi-line);
+  margin-bottom: 12px;
+}
+.editorContext {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.nameInput {
+  max-width: 200px;
+  min-width: 0;
+}
+.headerTools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.headerTools button {
+  width: 38px;
+  min-height: 38px;
+  padding: 0;
+}
+.headerTools svg {
+  width: 22px;
+  height: 22px;
+}
+.editorInfo > span[role="status"] {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--mi-muted);
+}
+.settingsButton {
+  display: none;
+}
+@media (max-width: 1050px) {
+  .editorInfo {
+    gap: 8px;
+    padding: 8px 20px;
+  }
+  .nameInput {
+    max-width: 160px;
+  }
+  .editorInfo > span[role="status"] {
+    font-size: 9px;
+  }
+}
+@media (max-width: 760px) {
+  .editorInfo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 10px;
+    padding: 8px 16px;
+    margin-bottom: 6px;
+  }
+  .nameInput {
+    grid-column: 1;
+    grid-row: 1;
+    max-width: none;
+  }
+  .headerTools {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .headerTools button {
+    width: 34px;
+    min-height: 36px;
+  }
+  .editorContext {
+    grid-column: 1;
+    grid-row: 2;
+    gap: 6px;
+  }
+  .editorContext .modeBack {
+    padding: 6px;
+  }
+  .editorContext > span {
+    font-size: 10px;
+  }
+  .settingsButton {
+    display: inline-flex;
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+  .editorInfo > span[role="status"] {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin: 0;
+    font-size: 9px;
   }
 }

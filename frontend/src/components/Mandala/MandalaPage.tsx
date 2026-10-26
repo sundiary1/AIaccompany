@@ -1,19 +1,19 @@
-import { Link, useBlocker } from "@tanstack/react-router"
+import { useBlocker } from "@tanstack/react-router"
 import { Card, Input, Modal, Tag, Title, Tooltip } from "animal-island-ui"
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  BookOpen,
-  Download,
-  Palette,
-  Redo2,
-  Settings2,
-  Sparkles,
-  Trash2,
-  Undo2,
-} from "lucide-react"
+import { Palette, Sparkles } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
 import { IslandButton } from "../IslandUI/IslandButton"
+import {
+  ArrowLeftIcon,
+  ArrowUpRightIcon,
+  BookIcon,
+  DownloadIcon,
+  RedoIcon,
+  SettingsIcon,
+  TrashIcon,
+  UndoIcon,
+} from "../IslandUI/island-icons"
+import { HeaderAction, PageHeader } from "../IslandUI/PageHeader"
 import { CanvasViewport } from "./CanvasViewport"
 import { ColoringCanvas } from "./ColoringCanvas"
 import { MandalaSettings, TemplatePreview } from "./MandalaSettings"
@@ -125,20 +125,96 @@ export function MandalaPage() {
       data-editing={editing}
       data-testid="mandala-page"
     >
-      <header className={styles.header}>
-        <Link to="/island-preview" preload={false} className={styles.back}>
-          <ArrowLeft size={17} />
-          <span>返回心屿</span>
-        </Link>
-        <div className={styles.brand}>
-          <BookOpen size={22} />
-          <strong>书屋 · 曼陀罗绘画</strong>
-        </div>
-        {!editing && (
-          <span className={styles.headerNote}>让颜色，慢慢展开。</span>
-        )}
-        {editing && (
-          <>
+      <PageHeader
+        title="书屋 · 曼陀罗绘画"
+        shortTitle="书屋"
+        icon={<BookIcon size={19} />}
+        actions={
+          editing ? (
+            <HeaderAction
+              icon={<DownloadIcon size={17} />}
+              label={exporting ? "导出中" : "导出 PNG"}
+              variant="primary"
+              disabled={exporting}
+              onClick={() => void savePng()}
+            />
+          ) : undefined
+        }
+      />
+      {!editing ? (
+        <main className={styles.welcome}>
+          <div className={styles.welcomeIntro}>
+            <span className={styles.eyebrow}>MIND ISLAND · 创作时光</span>
+            <h2>
+              留一页空白，
+              <br />
+              让心里的颜色落下来。
+            </h2>
+            <p>不必画得完美。从一片花瓣，或一条线开始。</p>
+          </div>
+          <div className={styles.welcomeArtwork}>
+            <TemplatePreview template={TEMPLATES[4]} colored />
+            <span>TAKE YOUR TIME</span>
+          </div>
+          <div className={styles.modeCards}>
+            <Card className={styles.modeCard} color="app-green" pattern="none">
+              <Palette size={25} />
+              <Title size="small" variant="tab" color="app-green">
+                自由涂色
+              </Title>
+              <p>选一幅图案，给每个小小的区域一种颜色。</p>
+              <IslandButton variant="primary" onClick={() => start("coloring")}>
+                开始涂色
+                <ArrowUpRightIcon size={16} />
+              </IslandButton>
+              <Tag size="small" variant="soft" color="app-green">
+                {TEMPLATES.length} 幅原创图案
+              </Tag>
+            </Card>
+            <Card className={styles.modeCard} color="app-blue" pattern="none">
+              <Sparkles size={25} />
+              <Title size="small" variant="tab" color="app-blue">
+                对称创作
+              </Title>
+              <p>轻轻画一笔，让线条向四周生长、相遇。</p>
+              <IslandButton onClick={() => start("symmetry")}>
+                开始创作
+                <ArrowUpRightIcon size={16} />
+              </IslandButton>
+              <Tag size="small" variant="soft" color="app-blue">
+                6 / 8 / 12 / 16 轴
+              </Tag>
+            </Card>
+          </div>
+        </main>
+      ) : (
+        <>
+          <div
+            className={styles.editorInfo}
+            role="toolbar"
+            aria-label="绘画工具"
+          >
+            <div className={styles.editorContext}>
+              <IslandButton
+                className={styles.modeBack}
+                onClick={() =>
+                  confirm(
+                    "返回书屋？",
+                    "当前作品尚未导出。返回后可重新选择创作模式。",
+                    () => {
+                      setEditing(false)
+                      setNotice("")
+                    },
+                  )
+                }
+              >
+                <ArrowLeftIcon size={14} />
+                选择模式
+              </IslandButton>
+              <Tag size="small" variant="soft" color="app-teal">
+                {work.mode === "coloring" ? "自由涂色" : "对称创作"}
+              </Tag>
+            </div>
             <Input
               aria-label="作品名称"
               className={styles.nameInput}
@@ -153,7 +229,7 @@ export function MandalaPage() {
                   disabled={!history.canUndo || exporting}
                   onClick={history.undo}
                 >
-                  <Undo2 size={17} />
+                  <UndoIcon size={17} />
                 </IslandButton>
               </Tooltip>
               <Tooltip title="重做">
@@ -162,7 +238,7 @@ export function MandalaPage() {
                   disabled={!history.canRedo || exporting}
                   onClick={history.redo}
                 >
-                  <Redo2 size={17} />
+                  <RedoIcon size={17} />
                 </IslandButton>
               </Tooltip>
               <Tooltip title="清空当前作品">
@@ -183,90 +259,10 @@ export function MandalaPage() {
                     )
                   }
                 >
-                  <Trash2 size={17} />
+                  <TrashIcon size={17} />
                 </IslandButton>
               </Tooltip>
-              <IslandButton
-                variant="primary"
-                className={styles.exportButton}
-                disabled={exporting}
-                onClick={() => void savePng()}
-              >
-                <Download size={16} />
-                <span>{exporting ? "导出中" : "导出 PNG"}</span>
-              </IslandButton>
             </div>
-          </>
-        )}
-      </header>
-      {!editing ? (
-        <main className={styles.welcome}>
-          <div className={styles.welcomeIntro}>
-            <span className={styles.eyebrow}>MIND ISLAND · 创作时光</span>
-            <h1>
-              留一页空白，
-              <br />
-              让心里的颜色落下来。
-            </h1>
-            <p>不必画得完美。从一片花瓣，或一条线开始。</p>
-          </div>
-          <div className={styles.welcomeArtwork}>
-            <TemplatePreview template={TEMPLATES[4]} colored />
-            <span>TAKE YOUR TIME</span>
-          </div>
-          <div className={styles.modeCards}>
-            <Card className={styles.modeCard} color="app-green" pattern="none">
-              <Palette size={25} />
-              <Title size="small" variant="tab" color="app-green">
-                自由涂色
-              </Title>
-              <p>选一幅图案，给每个小小的区域一种颜色。</p>
-              <IslandButton variant="primary" onClick={() => start("coloring")}>
-                开始涂色
-                <ArrowUpRight size={16} />
-              </IslandButton>
-              <Tag size="small" variant="soft" color="app-green">
-                {TEMPLATES.length} 幅原创图案
-              </Tag>
-            </Card>
-            <Card className={styles.modeCard} color="app-blue" pattern="none">
-              <Sparkles size={25} />
-              <Title size="small" variant="tab" color="app-blue">
-                对称创作
-              </Title>
-              <p>轻轻画一笔，让线条向四周生长、相遇。</p>
-              <IslandButton onClick={() => start("symmetry")}>
-                开始创作
-                <ArrowUpRight size={16} />
-              </IslandButton>
-              <Tag size="small" variant="soft" color="app-blue">
-                6 / 8 / 12 / 16 轴
-              </Tag>
-            </Card>
-          </div>
-        </main>
-      ) : (
-        <>
-          <div className={styles.editorInfo}>
-            <IslandButton
-              className={styles.modeBack}
-              onClick={() =>
-                confirm(
-                  "返回书屋？",
-                  "当前作品尚未导出。返回后可重新选择创作模式。",
-                  () => {
-                    setEditing(false)
-                    setNotice("")
-                  },
-                )
-              }
-            >
-              <ArrowLeft size={14} />
-              选择模式
-            </IslandButton>
-            <Tag size="small" variant="soft" color="app-teal">
-              {work.mode === "coloring" ? "自由涂色" : "对称创作"}
-            </Tag>
             <span role="status">
               {notice ||
                 (dirty
@@ -279,7 +275,7 @@ export function MandalaPage() {
               className={styles.settingsButton}
               onClick={() => setSettingsOpen(true)}
             >
-              <Settings2 size={16} />
+              <SettingsIcon size={16} />
               设置
             </IslandButton>
           </div>

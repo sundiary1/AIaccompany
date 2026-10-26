@@ -3,18 +3,6 @@ import { useGLTF } from "@react-three/drei"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { Tooltip } from "animal-island-ui"
 import {
-  ArrowLeft,
-  Map as MapIcon,
-  MessageCircle,
-  Minus,
-  Plus,
-  RotateCcw,
-  Shapes,
-  Waves,
-  Wind,
-  X,
-} from "lucide-react"
-import {
   useCallback,
   useEffect,
   useRef,
@@ -25,6 +13,20 @@ import { ErrorBoundary, type FallbackProps } from "react-error-boundary"
 import { ChatPanel } from "../Chat/ChatPanel"
 import { useCompanionChat } from "../Chat/useCompanionChat"
 import { IslandButton } from "../IslandUI/IslandButton"
+import {
+  BookIcon,
+  ChatIcon,
+  CloseIcon,
+  LeafIcon,
+  MapIcon,
+  MinusIcon,
+  MountainIcon,
+  PlusIcon,
+  RefreshIcon,
+  SailboatIcon,
+  TreeIcon,
+} from "../IslandUI/island-icons"
+import { HeaderAction, PageHeader } from "../IslandUI/PageHeader"
 import { ArchipelagoMap } from "./ArchipelagoMap"
 import { CAT_MODEL_URL, type CompanionCatState } from "./CompanionCat"
 import { ForestAtmosphere } from "./ForestAtmosphere"
@@ -77,7 +79,7 @@ function SceneError({ resetErrorBoundary }: FallbackProps) {
           className={styles.retry}
           onClick={resetErrorBoundary}
         >
-          <RotateCcw size={15} aria-hidden="true" />
+          <RefreshIcon size={15} aria-hidden="true" />
           重试三维显示
         </IslandButton>
       </div>
@@ -185,22 +187,15 @@ export function IslandPreviewPage() {
         data-map-open={mapOpen}
       >
         <ForestAtmosphere moving={backgroundMoving && playing} />
-        <header className={styles.header}>
-          <div
-            className={styles.brand}
-            role="img"
-            aria-label="心屿 Mind Island"
-          >
-            <span className={styles.brandMark}>
-              <Waves size={24} strokeWidth={1.45} aria-hidden="true" />
-            </span>
-            <span className={styles.brandChinese}>心屿</span>
-            <span className={styles.brandEnglish}>Mind Island</span>
-          </div>
-          <nav className={forest.headerActions} aria-label="群岛导航">
+        <PageHeader
+          home
+          title="心屿"
+          icon={<SailboatIcon size={20} />}
+          actions={
             <Tooltip title="查看群岛与入口" placement="bottom">
-              <IslandButton
-                className={forest.mapButton}
+              <HeaderAction
+                icon={<MapIcon size={17} />}
+                label="群岛地图"
                 ref={mapButtonRef}
                 aria-label="群岛地图"
                 aria-haspopup="dialog"
@@ -209,17 +204,10 @@ export function IslandPreviewPage() {
                   mapSelected.current = false
                   setMapOpen(true)
                 }}
-              >
-                <MapIcon size={17} />
-                <span className={forest.navLabel}>群岛地图</span>
-              </IslandButton>
+              />
             </Tooltip>
-            <Link to="/" className={styles.back}>
-              <ArrowLeft size={15} aria-hidden="true" />
-              返回首页
-            </Link>
-          </nav>
-        </header>
+          }
+        />
 
         <main className={styles.main}>
           <div className={styles.intro}>
@@ -285,7 +273,7 @@ export function IslandPreviewPage() {
                   disabled={!ready || failed}
                   onClick={() => zoom(-1)}
                 >
-                  <Minus size={16} />
+                  <MinusIcon size={16} />
                 </IslandButton>
               </Tooltip>
               <Tooltip title="放大视角" placement="top">
@@ -295,7 +283,7 @@ export function IslandPreviewPage() {
                   disabled={!ready || failed}
                   onClick={() => zoom(1)}
                 >
-                  <Plus size={16} />
+                  <PlusIcon size={16} />
                 </IslandButton>
               </Tooltip>
               <Tooltip title="复位视角" placement="top">
@@ -305,7 +293,7 @@ export function IslandPreviewPage() {
                   disabled={!ready || failed}
                   onClick={() => setResetKey((key) => key + 1)}
                 >
-                  <RotateCcw size={15} />
+                  <RefreshIcon size={15} />
                 </IslandButton>
               </Tooltip>
               <Tooltip
@@ -325,7 +313,7 @@ export function IslandPreviewPage() {
                   disabled={reducedMotion}
                   onClick={() => setBackgroundMoving((moving) => !moving)}
                 >
-                  <Wind size={16} />
+                  <LeafIcon size={16} />
                 </IslandButton>
               </Tooltip>
             </fieldset>
@@ -340,7 +328,7 @@ export function IslandPreviewPage() {
               onClick={openCharacterInfo}
               aria-expanded={chatOpen}
             >
-              <MessageCircle size={15} strokeWidth={1.6} aria-hidden="true" />
+              <ChatIcon size={15} aria-hidden="true" />
               与小屿聊聊
             </IslandButton>
             {ISLANDS.filter(
@@ -352,7 +340,13 @@ export function IslandPreviewPage() {
                 preload={false}
                 className={styles.infoButton}
               >
-                <Shapes size={15} strokeWidth={1.6} aria-hidden="true" />
+                {island.id === "mandala" ? (
+                  <BookIcon size={19} />
+                ) : island.id === "mindfulness" ? (
+                  <TreeIcon size={19} />
+                ) : (
+                  <MountainIcon size={19} />
+                )}
                 {island.name}
               </Link>
             ))}
@@ -395,7 +389,7 @@ export function IslandPreviewPage() {
           }}
         >
           <span className={styles.panelIcon}>
-            <Waves size={29} strokeWidth={1.35} aria-hidden="true" />
+            <SailboatIcon size={29} aria-hidden="true" />
           </span>
           <Dialog.Title className={styles.panelTitle}>
             欢迎来到 Mind Island。
@@ -421,7 +415,7 @@ export function IslandPreviewPage() {
               className={styles.panelClose}
               aria-label="关闭信息面板"
             >
-              <X size={18} aria-hidden="true" />
+              <CloseIcon size={18} aria-hidden="true" />
             </IslandButton>
           </Dialog.Close>
         </Dialog.Content>

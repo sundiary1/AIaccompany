@@ -1,15 +1,16 @@
-import { Link } from "@tanstack/react-router"
 import { Modal } from "animal-island-ui"
-import {
-  ArrowLeft,
-  CopyPlus,
-  FolderOpen,
-  RotateCcw,
-  Save,
-  SlidersHorizontal,
-} from "lucide-react"
 import { useState } from "react"
 import { IslandButton } from "../IslandUI/IslandButton"
+import {
+  CopyIcon,
+  FolderIcon,
+  MountainIcon,
+  RefreshIcon,
+  SaveIcon,
+  SlidersIcon,
+} from "../IslandUI/island-icons"
+import { HeaderAction, HeaderMenu, PageHeader } from "../IslandUI/PageHeader"
+import navigation from "../IslandUI/page-header.module.css"
 import { ProjectDialog, ProjectLibrary } from "./ProjectLibrary"
 import type { Project } from "./project-api"
 import styles from "./sandplay.module.css"
@@ -42,67 +43,71 @@ export function SandplayPage() {
   }
   return (
     <div className={styles.page} data-testid="sandplay-page">
-      <header className={styles.header}>
-        <Link
-          to="/island-preview"
-          preload={false}
-          className={styles.back}
-          aria-label="返回"
-        >
-          <ArrowLeft size={17} aria-hidden="true" />
-          <span className={styles.backLabel}>返回</span>
-        </Link>
-        <h1 className={styles.title}>沙盒 · 心理沙盘</h1>
-        {projects.current && (
-          <span className={styles.projectTitle} title={projects.current.title}>
-            {projects.current.title}
-          </span>
-        )}
-        <div className={styles.actions}>
-          <IslandButton
-            type="button"
-            onClick={() => setLibrary(true)}
-            disabled={disabled}
-            className={styles.toolButton}
-            variant="default"
-          >
-            <FolderOpen size={16} />
-            我的作品
-          </IslandButton>
-          <IslandButton
-            type="button"
-            onClick={() =>
-              projects.current ? void projects.save() : nameNew()
-            }
-            disabled={disabled}
-            className={`${styles.toolButton} ${styles.primary}`}
-            variant="primary"
-          >
-            <Save size={16} />
-            保存
-          </IslandButton>
-          <IslandButton
-            type="button"
-            onClick={nameNew}
-            disabled={disabled}
-            className={styles.toolButton}
-            variant="default"
-          >
-            <CopyPlus size={16} />
-            另存为
-          </IslandButton>
-        </div>
-        <IslandButton
-          type="button"
-          className={styles.settings}
-          disabled={disabled}
-          aria-label="打开沙盘设置"
-          onClick={() => bridge.command("open-settings")}
-        >
-          <SlidersHorizontal size={16} aria-hidden="true" />
-          <span className={styles.settingsLabel}>设置</span>
-        </IslandButton>
-      </header>
+      <PageHeader
+        title="沙盒 · 心理沙盘"
+        shortTitle="沙盒"
+        icon={<MountainIcon size={19} />}
+        actions={
+          <>
+            {projects.current && (
+              <span className={navigation.desktopOnly}>
+                <span
+                  className={styles.projectTitle}
+                  title={projects.current.title}
+                >
+                  {projects.current.title}
+                </span>
+              </span>
+            )}
+            <HeaderAction
+              icon={<FolderIcon size={17} />}
+              label="我的作品"
+              mobileIconOnly
+              disabled={disabled}
+              onClick={() => setLibrary(true)}
+            />
+            <HeaderAction
+              icon={<SaveIcon size={17} />}
+              label="保存"
+              variant="primary"
+              disabled={disabled}
+              onClick={() =>
+                projects.current ? void projects.save() : nameNew()
+              }
+            />
+            <span className={navigation.desktopOnly}>
+              <HeaderAction
+                icon={<CopyIcon size={17} />}
+                label="另存为"
+                variant="default"
+                disabled={disabled}
+                onClick={nameNew}
+              />
+            </span>
+            <span className={navigation.mobileOnly}>
+              <HeaderMenu
+                disabled={disabled}
+                items={[
+                  {
+                    id: "save-as",
+                    label: "另存为",
+                    icon: <CopyIcon size={18} />,
+                    onSelect: nameNew,
+                  },
+                  {
+                    id: "settings",
+                    label: "沙盘设置",
+                    icon: <SlidersIcon size={18} />,
+                    onSelect: () => {
+                      bridge.command("open-settings")
+                    },
+                  },
+                ]}
+              />
+            </span>
+          </>
+        }
+      />
       <main
         className={styles.workspace}
         aria-label="沙盘创作区域"
@@ -156,7 +161,7 @@ export function SandplayPage() {
                     bridge.retry()
                 }}
               >
-                <RotateCcw size={16} aria-hidden="true" />
+                <RefreshIcon size={16} aria-hidden="true" />
                 重新加载沙盘
               </IslandButton>
             )}
